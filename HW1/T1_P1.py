@@ -4,6 +4,8 @@
 # STARTER CODE
 ##################
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import math
 
@@ -35,3 +37,5 @@ def compute_loss(tau):
 for tau in (0.01, 2, 100):
     print("Loss for tau = " + str(tau) + ": " + str(compute_loss(tau)))
 
+
+# Make plots for problem 1.4
