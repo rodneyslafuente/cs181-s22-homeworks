@@ -116,41 +116,6 @@ should be.
 
 \end{problem}
 
-\subsubsection*{Solution}
-
-\begin{enumerate}
-
-  \item Need to change so that $x_i$ is not included inside of nested summation
-  
-  \begin{equation*}
-    \mcL(W) = \sum_{i} (y_i - f(x_i))^2
-  \end{equation*}
-
-  \begin{equation*}
-    = \sum_{i} \left(y_i - \sum_{n\neq i} K(x_n, x_i) y_n \right)^2 
-  \end{equation*}
-
-
-  \begin{equation*}
-    = \sum_{i} \left(y_i - \sum_{n} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) y_n\right)^2 
-  \end{equation*}
-
-  In the above I intentionally include the term 
-  $K(x_n,x_i)y_n$ in the definition of $f(x_i)$. The non-parametric
-  model should not change when given different inputs.
-
-  \item 
-  
-  \begin{equation*}
-    \frac{d}{d\tau} \mcL(W) = \frac{d}{d\tau} \sum_{i} \left(y_i - \sum_{n} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) y_n\right)^2 
-  \end{equation*}
-
-  \begin{equation*}
-    = 2 \sum_{i} \left(y_i - \sum_{n} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) y_n\right) 
-    \left( - y_n \sum_{n} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) \right) 
-  \end{equation*}
-  
-\end{enumerate}
 
 \newpage
 
@@ -210,7 +175,58 @@ in the command-line using \texttt{python T1\_P1\_TestCases.py}.
 
 \end{framed}  
 
+
 \newpage
+\subsubsection*{Solution}
+
+\begin{enumerate}
+
+  \item 
+  
+  \begin{equation*}
+    \mcL(W) = \sum_{i} (y_i - f(x_i))^2
+  \end{equation*}
+
+  In calculating $f(x_i)$, we don't include $K(x_i, x_i)y_n$ as $x_i$ is the value whose
+  target we are predicting
+
+  \begin{equation*}
+    = \sum_{i} \left(y_i - \sum_{n\neq i} K(x_n, x_i) y_n \right)^2 
+  \end{equation*}
+
+
+  \begin{equation*}
+    \mcL(W) = \sum_{i} \left(y_i - \sum_{n\neq i} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) y_n\right)^2 
+  \end{equation*}
+
+  \item 
+  
+  \begin{equation*}
+    \frac{d}{d\tau}  \mcL(W)  = 
+    \frac{d}{d\tau} \left( \sum_{i} \left(y_i - \sum_{n\neq i} K(x_n, x_i) y_n \right)^2 \right)
+  \end{equation*}
+
+  \begin{equation*}
+    =  \sum_{i}  2 \left(y_i - \sum_{n\neq i} K(x_n, x_i) y_n \right) 
+    \left(- \sum_{n\neq i}  \frac{d}{d\tau} \left( K(x_n, x_i) \right) y_n \right) 
+  \end{equation*}
+
+
+  \begin{multline*}
+    =  
+    \sum_{i}  - 2 \left(y_i - \sum_{n\neq i} \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right) y_n\right) \\
+    \left( \sum_{n\neq i} \left(\frac{(x_n-x_i)^T (x_n-x_i)}{\tau^2} \right) \exp\left(\frac{-(x_n-x_i)^T (x_n-x_i)}{\tau} \right)  y_n\right) 
+  \end{multline*}
+
+  \item
+
+  
+
+\end{enumerate}
+
+\newpage
+
+
 
 
 
