@@ -6,8 +6,11 @@
 
 \usepackage[OT1]{fontenc}
 \usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
 \usepackage[pdftex]{graphicx}
 \usepackage{graphicx}
+\graphicspath{ {./} }
+
 \usepackage{caption}
 \usepackage{fullpage}
 \usepackage{soul}
@@ -220,12 +223,34 @@ in the command-line using \texttt{python T1\_P1\_TestCases.py}.
 
   \item
 
-  Using the script in T1\_P1.py, the loss for $\tau=0.01$ is 8.75, $\tau=2$ is 3.30501649457,
+  Computed using the script in T1\_P1.py, the loss for $\tau=0.01$ is 8.75, $\tau=2$ is 3.30501649457,
   and $\tau=100$ is 120.359193422. 
 
-  \item
-
+  \newpage
+  \item 
   
+  The following plot is made in the script T1\_P1.py.
+  
+  \begin{figure}[h]
+  \includegraphics[scale=0.8]{P1}
+  \centering
+  \end{figure}
+
+  In the case of $\tau=0.01$, since $f(x^*)$ is not normalized, each of the $K(x_n, x_*)$ weights
+  is much closer to 1 and the overall prediction is much greater than for the other two values of 
+  $\tau$. Additionally, target values for data points farther away from the one being 
+  predicted are weighted too heavily, resulting in a not-too-fine fit for the data.
+
+  In the case of $\tau=100$, values that are not exactly that which is being predicted are almost
+  not taken account of (e.g. have very minimal weight) and so the prediction is almost zero except 
+  for $x$ values that happen to be very similar to those in the training set.
+  
+  In the case of $\tau=2$, training set values similar to the value for which $y$ is being predicted
+  are weighted enough that $x$ values not similar to one of the training set points (e.g.
+  2.5, which is right in between its closest training set values 2 and 3) do have meaningful
+  predictions. They are not weighted so much that closeness is not sufficiently taken account for,
+  however.
+
 
 
 \end{enumerate}
