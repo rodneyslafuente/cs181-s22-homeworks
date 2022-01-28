@@ -37,6 +37,7 @@ for tau in (0.01, 2, 100):
 
 
 # Make plots for problem 1.4
+
 def f(x, tau):
     res = 0
 
@@ -47,14 +48,15 @@ def f(x, tau):
 
 x = np.arange(0, 12, 0.1)
 
+plt.rcParams.update({ "text.usetex": True })
 plt.figure()
 
 for tau in (0.01, 2, 100):
-    plt.plot(x, [f(x_i, tau) for x_i in x], label=r'$\tau = $'+str(tau), linestyle="", marker="o")
+    plt.plot(x, [f(x_i, tau) for x_i in x], label=r'$\tau = $'+str(tau), linestyle='', marker='o')
 
-plt.xlabel(r'$x^*$')
-plt.ylabel(r'$f(x^*)$')
-plt.title(r"$f(x^*)$ with different lengthscales")
+plt.xlabel('$x^*$')
+plt.ylabel('$f(x^*)$')
+plt.title('$f(x^*)$ calculated with different lengthscales')
 plt.legend();
 
 plt.savefig('P1.png');
