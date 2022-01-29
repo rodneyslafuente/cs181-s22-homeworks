@@ -41,18 +41,19 @@ def predict_knn(k=1, tau=1):
     """Returns predictions for the values in x_test, using KNN predictor with the specified k."""
     return list(map(lambda x: predict_y(x, k, tau), x_test))
 
-def plot_knn_preds(k):
-    plt.xlim([0, 12])
-    plt.ylim([0,3])
-    
-    y_test = predict_knn(k=k)
-    
-    plt.scatter(x_train, y_train, label="training data", color='black')
-    plt.plot(x_test, y_test, label="predictions using k = "+str(k))
+# plot predicitions
+plt.figure()
+plt.scatter(x_train, y_train, label="training data", color='black')
 
-    plt.legend()
-    plt.title("KNN Predictions with k = " + str(k))
-    plt.savefig('k' + str(k) + '.png')
+def plot_knn_preds(k):
+    y_test = predict_knn(k=k)
+    plt.plot(x_test, y_test, label="predictions using k = "+str(k))
 
 for k in (1, 3, len(x_train)-1):
     plot_knn_preds(k)
+
+plt.xlabel('$x$')
+plt.ylabel('$y$')
+plt.title("KNN Predictions")
+plt.legend()
+plt.savefig('k.png')
