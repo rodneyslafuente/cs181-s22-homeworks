@@ -27,14 +27,19 @@ y_train = np.array([d[1] for d in data])
 
 x_test = np.arange(0, 12, .1)
 
-print("y is:")
-print(y_train)
 
+def compute_kernel(x_1, x_2, tau):
+    return math.exp((- (x_2 - x_1) ** 2) / tau)
+
+def find_k_nearest(x, k, tau):
+    return sorted(data, key=lambda tup: compute_kernel(tup[0], x, tau))[-k:]
+
+def predict_y(x, k, tau):
+    return (1 / k) * sum(list(map(lambda tup: tup[1], find_k_nearest(x, k, tau))))
+    
 def predict_knn(k=1, tau=1):
     """Returns predictions for the values in x_test, using KNN predictor with the specified k."""
-    # TODO: your code here
-    return np.zeros(len(x_test))
-
+    return list(map(lambda x: predict_y(x, k, tau), x_test))
 
 def plot_knn_preds(k):
     plt.xlim([0, 12])
@@ -42,13 +47,12 @@ def plot_knn_preds(k):
     
     y_test = predict_knn(k=k)
     
-    plt.scatter(x_train, y_train, label = "training data", color = 'black')
-    plt.plot(x_test, y_test, label = "predictions using k = " + str(k))
+    plt.scatter(x_train, y_train, label="training data", color='black')
+    plt.plot(x_test, y_test, label="predictions using k = "+str(k))
 
     plt.legend()
     plt.title("KNN Predictions with k = " + str(k))
     plt.savefig('k' + str(k) + '.png')
-    plt.show()
 
 for k in (1, 3, len(x_train)-1):
     plot_knn_preds(k)
