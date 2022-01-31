@@ -404,6 +404,87 @@ $y$ are scalars, $w$ is also a scalar.
 
 \end{problem}
 
+\newpage
+\subsubsection*{Solution}
+
+\begin{enumerate}
+
+\item Let $\mcL(w)$ be the expected squared loss of the linear model given
+the parameter $w$:
+
+\begin{equation*}
+    \mcL(w) = E_{x,y}[(y-\hat{y})^2]
+\end{equation*}
+\begin{equation*}
+    = E_{x,y}[y^2 - 2y\hat{y} -\hat{y}^2]
+\end{equation*}
+\begin{equation*}
+    = E_{x,y}[y^2] - 2E_{x,y}[y\hat{y}] - E_{x,y}[\hat{y}^2]
+\end{equation*}
+\begin{equation*}
+    = E_{x,y}[y^2] - 2E_{x,y}[y(wx))] - E_{x,y}[(wx)^2]
+\end{equation*}
+\begin{equation*}
+    = E_{x,y}[y^2] - 2wE_{x,y}[yx)] - w^2E_{x,y}[x^2]
+\end{equation*}
+
+This is a quadratic function of $w$, meaning we can find the optimal value $w*$
+by differentiation:
+
+\begin{equation*}
+    \frac{d}{dw} \mcL(w) = -2E_{x,y} + 2wE_{x,y}[x^2]
+\end{equation*}
+
+Setting the equation to zero we have:
+
+\begin{equation*}
+    2E_{x,y} = 2w^*E_{x,y}[x^2]
+\end{equation*}
+
+\begin{equation*}
+    w^* = \frac{E_{x,y}[xy]}{E_{x,y}[x^2]}
+\end{equation*}
+
+\item
+
+Estimations of these moments can be gathered by averaging functions of
+the observed data:
+
+\begin{equation*}
+    E_{x,y}[xy] = \frac{1}{N} \sum_n x_n y_n
+\end{equation*}
+
+\begin{equation*}
+    E_{x,y}[x^2] = \frac{1}{N} \sum_n x_n^2
+\end{equation*}
+
+
+Substitution these estimations into the description of the optimal $w^*$ we have:
+
+\begin{equation*}
+    w^* = \frac{\frac{1}{N} \sum_n x_n y_n}{\frac{1}{N} \sum_n x_n^2}
+    = \frac{\sum_n x_n y_n}{\sum_n x_n^2}
+\end{equation*}
+
+The definition of the optimal $w*$ from the textbook is the following:
+
+\begin{equation*}
+    w^* = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
+\end{equation*}
+
+These two definitions are similar in the the inverse of the "square" of the
+observed $x$-values is being multiplied by the product of the observed $x$-values 
+and their targets $\mathbf{y}$.
+
+\item
+
+The derivations made did not rely on the assumption that $x$ and $y$ are jointly Gaussian.
+This is because the derivation was a partial derivative in terms of $w$, meaning that changing 
+the distribution of the variables would not have had an effect on the resulting derivation 
+given that terms of the form $E_{x,y}[g(x,y)]$ were interpreted as constants.
+
+\end{enumerate}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem 4
