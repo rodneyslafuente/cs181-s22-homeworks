@@ -7,6 +7,7 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 csv_filename = 'data/year-sunspots-republicans.csv'
 years  = []
@@ -35,24 +36,6 @@ republican_counts = np.array(republican_counts)
 sunspot_counts = np.array(sunspot_counts)
 last_year = 1985
 
-# Plot the data.
-plt.figure(1)
-plt.plot(years, republican_counts, 'o')
-plt.xlabel("Year")
-plt.ylabel("Number of Republicans in Congress")
-plt.figure(2)
-plt.plot(years, sunspot_counts, 'o')
-plt.xlabel("Year")
-plt.ylabel("Number of Sunspots")
-plt.figure(3)
-plt.plot(sunspot_counts[years<last_year], republican_counts[years<last_year], 'o')
-plt.xlabel("Number of Sunspots")
-plt.ylabel("Number of Republicans in Congress")
-plt.show()
-
-# Create the simplest basis, with just the time and an offset.
-X = np.vstack((np.ones(years.shape), years)).T
-
 # TODO: basis functions
 # Based on the letter input for part ('a','b','c','d'), output numpy arrays for the bases.
 # The shape of arrays you return should be: (a) 24x6, (b) 24x12, (c) 24x6, (c) 24x26
@@ -67,9 +50,43 @@ def make_basis(xx,part='a',is_years=True):
         
     if part == "a" and not is_years:
         xx = xx/20
-        
-        
-    return None
+    
+    # Make bases
+    X = []
+
+    # \phi(x) = x^j for j = 1, ..., 5
+    if part == 'a':
+        for x in xx:
+            data_point = [1]
+            for j in range(1, 6):
+                data_point.append(x ** j)
+            X.append(data_point)
+
+    # \phi(x) = exp(-(x - \mu)^2/25) for \mu = 1960, 1965, 1970, ..., 2010
+    elif part == 'b':
+        for x in xx:
+            data_point = [1]
+            for mu in range(1960, 2011, 5):
+                data_point.append(math.exp((-(x - mu) ** 2)) / 25)
+            X.append(data_point)
+
+    # \phi(x) = cos(x / j) for j = 1, ..., 5
+    elif part == 'c':
+        for x in xx:
+            data_point = [1]
+            for j in range(1, 6):
+                data_point.append(math.cos(x / j))
+            X.append(data_point)
+
+     # \phi(x) = cos(x / j) for j = 1, ..., 25
+    elif part == 'd':
+        for x in xx:
+            data_point = [1]
+            for j in range(1, 26):
+                data_point.append(math.cos(x / j))
+            X.append(data_point)
+
+    return np.array(X)
 
 # Nothing fancy for outputs.
 Y = republican_counts
@@ -82,13 +99,28 @@ def find_weights(X,Y):
 # Compute the regression line on a grid of inputs.
 # DO NOT CHANGE grid_years!!!!!
 grid_years = np.linspace(1960, 2005, 200)
-grid_X = np.vstack((np.ones(grid_years.shape), grid_years))
-grid_Yhat  = np.dot(grid_X.T, w)
 
-# TODO: plot and report sum of squared error for each basis
+def RSS(Y, Yhat):
+    res = 0
+    for y, y_hat in zip(Y, Yhat):
+        res += (y - y_hat) ** 2
+    return res
 
-# Plot the data and the regression line.
-plt.plot(years, republican_counts, 'o', grid_years, grid_Yhat, '-')
+
+plt.plot(years, republican_counts, 'o', label='Data')
+
+# Plot and report sum of squared error for each basis
+parts = ['a', 'b', 'c', 'd']
+for part in parts:
+    X = make_basis(years, part=part)
+    w = find_weights(X, Y)
+    grid_X = make_basis(grid_years, part=part)
+    grid_Yhat  = np.dot(grid_X, w)
+    Yhat = np.dot(X, w)
+    rss = RSS(Y, Yhat)
+    plt.plot(grid_years, grid_Yhat, '-', label='('+part+f') RSS: {rss: .2f}')
+
+plt.legend()
 plt.xlabel("Year")
 plt.ylabel("Number of Republicans in Congress")
-plt.show()
+plt.savefig('P4_1.png')
