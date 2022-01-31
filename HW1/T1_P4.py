@@ -106,7 +106,8 @@ def RSS(Y, Yhat):
         res += (y - y_hat) ** 2
     return res
 
-
+# Part (A)
+plt.figure(1)
 plt.plot(years, republican_counts, 'o', label='Data')
 
 # Plot and report sum of squared error for each basis
@@ -124,3 +125,25 @@ plt.legend()
 plt.xlabel("Year")
 plt.ylabel("Number of Republicans in Congress")
 plt.savefig('P4_1.png')
+
+
+# Part (B)
+sunspot_counts_pre_1985 = sunspot_counts[:13]
+republican_counts_pre_1985 = republican_counts[:13]
+Y = republican_counts_pre_1985
+
+plt.figure(2)
+plt.plot(sunspot_counts_pre_1985, republican_counts_pre_1985, 'o', label='Data')
+
+parts = ['a', 'c', 'd']
+for part in parts:
+    X = make_basis(sunspot_counts_pre_1985, part=part, is_years=False)
+    w = find_weights(X, Y)
+    Yhat = np.dot(X, w)
+    rss = RSS(Y, Yhat)
+    plt.plot(sunspot_counts_pre_1985, Yhat, 'o', label='('+part+f') RSS: {rss: .2f}')
+
+plt.xlabel("Number of Sunspots")
+plt.ylabel("Number of Republicans in Congress")
+plt.legend()
+plt.savefig('P4_2.png')
