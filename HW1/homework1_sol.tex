@@ -251,6 +251,10 @@ are weighted enough that $x$ values not similar to one of the training set point
 predictions. They are not weighted so much that closeness is not sufficiently taken account for,
 however.
 
+\item (Bonus) Using gradient descent, the optimal length scale is 1.706, which achieves a loss
+of 2.305 (both values rounded to three decimal places). Computing this value takes only 40
+iterations before the updates to the length scale become smaller than 0.000001.
+
 
 
 \end{enumerate}
@@ -422,17 +426,17 @@ the parameter $w$:
     = E_{x,y}[y^2] - 2E_{x,y}[y\hat{y}] - E_{x,y}[\hat{y}^2]
 \end{equation*}
 \begin{equation*}
-    = E_{x,y}[y^2] - 2E_{x,y}[y(wx))] - E_{x,y}[(wx)^2]
+    = E_{x,y}[y^2] - 2E_{x,y}[y(wx)] - E_{x,y}[(wx)^2]
 \end{equation*}
 \begin{equation*}
-    = E_{x,y}[y^2] - 2wE_{x,y}[yx)] - w^2E_{x,y}[x^2]
+    = E_{x,y}[y^2] - 2wE_{x,y}[yx] - w^2E_{x,y}[x^2]
 \end{equation*}
 
 This is a quadratic function of $w$, meaning we can find the optimal value $w*$
 by differentiation:
 
 \begin{equation*}
-    \frac{d}{dw} \mcL(w) = -2E_{x,y} + 2wE_{x,y}[x^2]
+    \frac{d}{dw} \mcL(w) = -2E_{x,y}[yx] + 2wE_{x,y}[x^2]
 \end{equation*}
 
 Setting the equation to zero we have:
@@ -458,8 +462,9 @@ the observed data:
     E_{x,y}[x^2] = \frac{1}{N} \sum_n x_n^2
 \end{equation*}
 
+\item
 
-Substitution these estimations into the description of the optimal $w^*$ we have:
+Substituting these estimations into the description of the optimal $w^*$ we have:
 
 \begin{equation*}
     w^* = \frac{\frac{1}{N} \sum_n x_n y_n}{\frac{1}{N} \sum_n x_n^2}
@@ -472,7 +477,7 @@ The definition of the optimal $w*$ from the textbook is the following:
     w^* = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}
 \end{equation*}
 
-These two definitions are similar in the the inverse of the "square" of the
+These two definitions are similar in that the inverse of the ``square" of the
 observed $x$-values is being multiplied by the product of the observed $x$-values 
 and their targets $\mathbf{y}$.
 
@@ -573,7 +578,7 @@ Given the quality of this fit, do you believe that the number of sunspots contro
 
 \begin{enumerate}
 
-\item The following plot is made in T1\_P4.
+\item The following plot is made in T1\_P4.py.
 
 \begin{figure}[h]
 \includegraphics[scale=0.8]{P4_1}
@@ -581,7 +586,7 @@ Given the quality of this fit, do you believe that the number of sunspots contro
 \end{figure}
 
 \newpage
-\item The following plot is made in T1\_P4.
+\item The following plot is made in T1\_P4.py.
 
 \begin{figure}[h]
 \includegraphics[scale=0.8]{P4_2}
@@ -590,7 +595,7 @@ Given the quality of this fit, do you believe that the number of sunspots contro
 
 In this graph, the data is eclipsed by the third fit. The best fit for this 
 model is the one made using basis (d). Despite the perfect fit, this model
-is very generalizable at all. I do not believe the number of sunspots controls
+is not very generalizable at all. I do not believe the number of sunspots controls
 the number of Republicans in the senate.
 
 \end{enumerate}

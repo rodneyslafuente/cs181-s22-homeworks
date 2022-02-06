@@ -110,7 +110,6 @@ def RSS(Y, Yhat):
 plt.figure(1)
 plt.plot(years, republican_counts, 'o', label='Data')
 
-# Plot and report sum of squared error for each basis
 parts = ['a', 'b', 'c', 'd']
 for part in parts:
     X = make_basis(years, part=part)
