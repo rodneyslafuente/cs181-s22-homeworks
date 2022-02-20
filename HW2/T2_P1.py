@@ -17,13 +17,11 @@ from scipy.special import expit as sigmoid
 def basis1(x):
     return np.stack([np.ones(len(x)), x], axis=1)
 
-# TODO: Implement this
 def basis2(x):
     return np.array([[1, x_i, x_i ** 2] for x_i in x])
 
-# TODO: Implement this
 def basis3(x):
-    return np.array([[1, x_i, x_i ** 2, x_i ** 3, x_i ** 4, x_i **5] for x_i in x])
+    return np.array([[1, x_i, x_i ** 2, x_i ** 3, x_i ** 4, x_i ** 5] for x_i in x])
 
 class LogisticRegressor:
     def __init__(self, eta, runs):
@@ -59,9 +57,9 @@ class LogisticRegressor:
             w = new_w
         self.W = w
 
-    # TODO: Fix this method!
     def predict(self, x):
-        return np.dot(x, self.W)
+        y_hat = [self.__logSigmoid(np.dot(self.W.T, x_i)) for x_i in x]
+        return np.array(y_hat)
 
     # Test private methods
     def test(self):
@@ -142,4 +140,4 @@ if __name__ == "__main__":
         all_models.append(model)
 
     # Here x and y contain last dataset:
-    visualize_prediction_lines(x, y, all_models, basis3, "exampleplot")
+    visualize_prediction_lines(x, y, all_models, basis2, "exampleplot")
