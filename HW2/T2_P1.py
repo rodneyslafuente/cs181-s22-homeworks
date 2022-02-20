@@ -19,11 +19,11 @@ def basis1(x):
 
 # TODO: Implement this
 def basis2(x):
-    return None
+    return np.array([[1, x_i, x_i ** 2] for x_i in x])
 
 # TODO: Implement this
 def basis3(x):
-    return None
+    return np.array([[1, x_i, x_i ** 2, x_i ** 3, x_i ** 4, x_i **5] for x_i in x])
 
 class LogisticRegressor:
     def __init__(self, eta, runs):
@@ -136,10 +136,10 @@ if __name__ == "__main__":
     all_models = []
     for _ in range(4):
         x, y = generate_data(N)
-        x_transformed = basis1(x)
+        x_transformed = basis2(x)
         model = LogisticRegressor(eta=eta, runs=runs)
         model.fit(x_transformed, y)
         all_models.append(model)
 
     # Here x and y contain last dataset:
-    visualize_prediction_lines(x, y, all_models, basis1, "exampleplot")
+    visualize_prediction_lines(x, y, all_models, basis3, "exampleplot")
