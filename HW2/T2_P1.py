@@ -14,8 +14,6 @@ from scipy.special import expit as sigmoid
 # free to change any of the class attributes, as long as you do not change any
 # of the given function headers (they must take and return the same arguments).
 
-# Note: this is in Python 3
-
 def basis1(x):
     return np.stack([np.ones(len(x)), x], axis=1)
 
@@ -33,24 +31,46 @@ class LogisticRegressor:
         self.eta = eta
         self.runs = runs
 
-    # NOTE: Just to show how to make 'private' methods
-    def __dummyPrivateMethod(self, input):
-        return None
+    def __logSigmoid(self, z):
+        return 1 / (np.exp(-z))
 
-    # TODO: Optimize w using gradient descent
+    def __computeGradient(self, x, y, w):
+        sum = 0
+        for i in range(len(x)):
+            x_i = x[i]
+            y_i = y[i][0]
+            y_i_hat = self.__logSigmoid(np.dot(w.T, x_i))
+            sum += (y_i_hat - y_i) * x_i
+        return sum
+
     def fit(self, x, y, w_init=None):
         # Keep this if case for the autograder
         if w_init is not None:
             self.W = w_init
         else:
             self.W = np.random.rand(x.shape[1], 1)
+        
+        # optimize w using gradient decsent
+        assert(len(x) == len(y))
+        w = self.W
+        new_w = w
+        for _ in range(self.runs):
+            new_w = w - self.eta * self.__computeGradient(x, y, w)
+            w = new_w
+        self.W = w
 
     # TODO: Fix this method!
     def predict(self, x):
         return np.dot(x, self.W)
 
+    # Test private methods
+    def test(self):
+        ## logSigmoid
+        print(self.__logSigmoid(0.5))
+        print(self.__logSigmoid(-4))
+
 # Function to visualize prediction lines
-# Takes as input last_x, last_y, [list of models], basis function, title
+# Takes as input last_x, last_y, [list of models], basis function, title,
 # last_x and last_y should specifically be the dataset that the last model
 # in [list of models] was trained on
 def visualize_prediction_lines(last_x, last_y, models, basis, title):
@@ -90,14 +110,13 @@ def visualize_prediction_lines(last_x, last_y, models, basis, title):
     plt.plot(X_pred, np.mean(Y_hats, axis=0), 'k', linewidth=5)
 
     plt.savefig(title + '.png')
-    plt.show()
 
 # Function to generate datasets from underlying distribution
 def generate_data(dataset_size):
     x, y = [], []
     for _ in range(dataset_size):
         x_i = 6 * np.random.random() - 3
-        p_i = np.sin(1.2*x_i) * 0.4 + 0.5
+        p_i = np.sin(1.2 * x_i) * 0.4 + 0.5
         y_i = np.random.binomial(1, p_i)
         x.append(x_i)
         y.append(y_i)
@@ -115,11 +134,12 @@ if __name__ == "__main__":
 
     # For example:
     all_models = []
-    for _ in range(10):
+    for _ in range(4):
         x, y = generate_data(N)
         x_transformed = basis1(x)
         model = LogisticRegressor(eta=eta, runs=runs)
         model.fit(x_transformed, y)
         all_models.append(model)
+
     # Here x and y contain last dataset:
     visualize_prediction_lines(x, y, all_models, basis1, "exampleplot")
