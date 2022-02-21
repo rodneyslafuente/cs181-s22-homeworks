@@ -165,9 +165,84 @@ This part of the problem is implemented in T2\_P1.py
 
 \item
 
-The three plots are the following, labeled by the basis they represent.
+Below are the three plots, each separated on a different page.
 
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{basis1}
+\centering
+\end{figure}
+\newpage
 
+\begin{figure}[h]
+\includegraphics[scale=0.8]{basis2}
+\centering
+\end{figure}
+\newpage
+
+\begin{figure}[h]
+\includegraphics[scale=0.8]{basis3}
+\centering
+\end{figure}
+\newpage
+
+\item
+
+\textbf{How are bias and variance reflected in the 3 types of curves on the graphs?}
+
+Bias and variance are reflected in the 3 types of curves on the graphs by
+
+1. How much models of a given type vary when new datasets are used (e.g., how
+different the thin lines on the graph are from each other). This visual component
+corresponds to the variance of the models. 
+
+2. How a single given model fits the dataset (e.g., how well the purple line, 
+which was fit using the displayed dataset, fit to the displayed dataset))). This
+visual component corresponds to the bias of models.
+
+\textbf{How do the fits of the individual and mean prediction functions change?}
+
+For the simpler models, such as those that use basis1, the individual predictions functions don't
+vary all that much. As the complexity increases when we move on to basis2 and basis3, 
+individual prediction functions begin to vary a lot more from each other. This 
+is due to the ability of the more complex models to fit their curves to 
+correctly classify a given dataset.
+
+As for the mean prediction functions, they become significantly more accurate as we move 
+on to more complex bases. The mean prediction function for models that use basis3
+very closely resembles the ground truth model. It is clear in this case, however
+that it is only the mean prediction function that is accurate and not the individual models that 
+are accurate, as the model learned from the displayed dataset (in purple in the plot
+for basis3) is very clearly fitting its dataset much more closely than it is resembling 
+the ground truth model. 
+
+\textbf{Keeping in mind that none of the bases approximates
+the true generating process exactly, discuss the extent to which each of the bases
+approximates the true process.}
+
+basis1 is unable to approximate the true process which much accuracy at all as it 
+is simply unable to model the form of the true process with only 
+non-quadratic terms of the $x$-values.
+
+basis2 is not too accurate for the same reason, however, it does have slightly less bias 
+and more variance. 
+
+basis3 is able to approximate the true process very well as it uses a more complete
+polynomial of $\textbf{x}$ as its basis. It does tend, however, to fit more closely
+to the data points themselves than to the true process, which is the downside of this basis.
+
+\item 
+Increasing the dataset size would \textbf{decrease} the variance, given that models
+would be required to use their weights to fit across more points. This is the 
+opposite of what would happen if the dataset size were to be decreased, which 
+would enable the models (especially those fit using basis3) to over-fit their 
+weights for the data points available. The loss for this scenario may even become zero,
+as basis3 could exactly fit a low enough given amount of data points.
+
+As for the bias, increasing the dataset size would \textbf{decrease} the bias as 
+each model would be given more information from which to tune their weights. More
+technically speaking, gradient descent would be able to take advantage of much
+more accurate gradients when optimizing weights.
 
 \end{enumerate}
 
