@@ -14,57 +14,68 @@ from scipy.special import expit as sigmoid
 # free to change any of the class attributes, as long as you do not change any
 # of the given function headers (they must take and return the same arguments).
 
+# Note: this is in Python 3
+
 def basis1(x):
     return np.stack([np.ones(len(x)), x], axis=1)
 
+# TODO: Implement this
 def basis2(x):
-    return np.array([[1, x_i, x_i**2] for x_i in x])
+    return None
 
 def basis3(x):
-    return np.array([[1, x_i, x_i**2, x_i**3, x_i**4, x_i**5] for x_i in x])
+    return np.array([[1, x_i, x_i ** 2, x_i ** 3, x_i ** 4, x_i ** 5] for x_i in x])
 
 class LogisticRegressor:
-    def __init__(self, eta, runs, N):
+    def __init__(self, eta, runs):
+        # Your code here: initialize other variables here
         self.eta = eta
         self.runs = runs
-        self.N = N
+
+    # NOTE: Just to show how to make 'private' methods
+    def __dummyPrivateMethod(self, input):
+        return None
 
     def __logSigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
+        return 1 / (np.exp(-z))
 
-    def __computeGradient(self, x, y, W):
-        gradient = np.zeros((x.shape[1], ))
-        for i in range(N):
+    def __computeGradient(self, x, y, w):
+        sum = 0
+
+        for i in range(len(x)):
             x_i = x[i]
             y_i = y[i][0]
-            y_i_hat = self.__logSigmoid(np.dot(W.T, x_i))
-            gradient += (y_i_hat - y_i) * x_i
-        gradient = gradient.reshape(-1, 1)
-        ## Averging the gradient over the data points, as is 
-        ## specified in Problem 1.1.
-        gradient /= N
-        return gradient
+            y_i_hat = self.__logSigmoid(np.dot(w.T, x_i))
+            sum += (y_i_hat - y_i) * x_i
+        
+        # here we average the sum over the number of contributions 
+        # to the gradient (we are using all data points so we must
+        # divide by the length of the dataset)
+        return sum / len(x)
 
+    # TODO: Optimize w using gradient descent
     def fit(self, x, y, w_init=None):
         # Keep this if case for the autograder
         if w_init is not None:
             self.W = w_init
         else:
-            self.W = np.random.rand(x.shape[1], 1)        
-        
-        # optimize W using gradient decsent
-        new_W = np.empty_like(self.W)
-        for _ in range(self.runs):
-            gradient = self.__computeGradient(x, y, self.W)
-            new_W = self.W - (self.eta * gradient)
-            self.W = new_W
+            self.W = np.random.rand(x.shape[1], 1)
 
+        # optimize W using gradient decsent
+        w = self.W
+        new_w = w
+        for _ in range(self.runs):
+            new_w = w - self.eta * self.__computeGradient(x, y, w)
+            w = new_w
+        self.W = w
+
+    # TODO: Fix this method!
     def predict(self, x):
         y_hat = [self.__logSigmoid(np.dot(self.W.T, x_i)) for x_i in x]
         return np.array(y_hat)
 
 # Function to visualize prediction lines
-# Takes as input last_x, last_y, [list of models], basis function, title,
+# Takes as input last_x, last_y, [list of models], basis function, title
 # last_x and last_y should specifically be the dataset that the last model
 # in [list of models] was trained on
 def visualize_prediction_lines(last_x, last_y, models, basis, title):
@@ -104,13 +115,14 @@ def visualize_prediction_lines(last_x, last_y, models, basis, title):
     plt.plot(X_pred, np.mean(Y_hats, axis=0), 'k', linewidth=5)
 
     plt.savefig(title + '.png')
+    plt.show()
 
 # Function to generate datasets from underlying distribution
 def generate_data(dataset_size):
     x, y = [], []
     for _ in range(dataset_size):
         x_i = 6 * np.random.random() - 3
-        p_i = np.sin(1.2 * x_i) * 0.4 + 0.5
+        p_i = np.sin(1.2*x_i) * 0.4 + 0.5
         y_i = np.random.binomial(1, p_i)
         x.append(x_i)
         y.append(y_i)
@@ -123,16 +135,16 @@ if __name__ == "__main__":
     eta = 0.001
     runs = 10000
     N = 30
-    num_models = 10
 
-    # Make plot for each basis with all models on each plot
-    for basis in [basis1, basis2, basis3]:
-        all_models = []
-        for _ in range(num_models):
-            x, y = generate_data(N)
-            x_transformed = basis(x)
-            model = LogisticRegressor(eta=eta, runs=runs, N=N)
-            model.fit(x_transformed, y)
-            all_models.append(model)
-        plt.figure()
-        visualize_prediction_lines(x, y, all_models, basis, basis.__name__)
+    # TODO: Make plot for each basis with all 10 models on each plot
+
+    # For example:
+    all_models = []
+    for _ in range(10):
+        x, y = generate_data(N)
+        x_transformed = basis1(x)
+        model = LogisticRegressor(eta=eta, runs=runs)
+        model.fit(x_transformed, y)
+        all_models.append(model)
+    # Here x and y contain last dataset:
+    visualize_prediction_lines(x, y, all_models, basis1, "exampleplot")
