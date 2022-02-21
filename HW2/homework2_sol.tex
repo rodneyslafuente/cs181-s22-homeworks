@@ -328,17 +328,23 @@ $\boldX^{-\top} := (\boldX^{\top})^{-1}$
 \begin{enumerate}
 \item 
 
-For each data point $(\boldx_i, \boldy_i)\in \{(\boldx_i, \boldy_i)\}_{i=1}^N$
+For each data point $(\boldx, \boldy)\in \{(\boldx_i, \boldy_i)\}_{i=1}^N$
 we have
-$$p(\boldx_i, C_k) = p(\boldy_i = C_k | \pi)p(\boldx_i | \boldy_i = C_k)$$
-$$= \pi_k p(\boldx_i | \boldy_i = C_k)$$
-making the likelihood of the data set
-$$p(D; \pi) = p( \{(\boldx_i, \boldy_i)\}_{i=1}^N; \pi)$$
-$$ = \prod_{i=1}^N \prod_{j=1}^K (\pi p(\boldx_i | \boldy_i = C_k))^{y_{ij}}$$
+$$p(\boldx_i, \boldy_i) = p(\boldx_i | \boldy_i )p(\boldy_i) $$
+$$= \prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
 
-where $y_{ij} = 1$ if $y_i = C_j$ and is zero otherwise.
+where $\boldy_{ij}$ is the $j$th element of $\boldy_i$. This makes the likelihood of the data set
+$$p(D; \pi) = p( \{(\boldx_i, \boldy_i)\}_{i=1}^N; \pi)$$
+$$ = \prod_{i=1}^N\prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
+
+and the log-likelihood of the data set
+
+$$\ln p(D; \pi) = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln (p(\boldx_i | \boldy_i = C_j)\pi_j)$$
+$$ = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln p(\boldx_i | \boldy_i = C_j) + \ln\pi_j)$$
+
 
 \item 
+
 
 
 
