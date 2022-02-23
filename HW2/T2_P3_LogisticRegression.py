@@ -17,6 +17,24 @@ class LogisticRegression:
     def __dummyPrivateMethod(self, input):
         return None
 
+    def __logSigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
+    def __softmax(self, z):
+        denom = sum([np.exp(z_j) for z_j in z])
+        probs = [np.exp(z_i) / denom for z_i in z]
+        return probs
+
+    def test(self):
+        z = np.array([4, 1, 7])
+        sm = self.__softmax(z)
+        print(sm)
+
+    def __gradient(self, X, y):
+
+        pass
+
+
     # TODO: Implement this method!
     def fit(self, X, y):
         return
@@ -35,3 +53,12 @@ class LogisticRegression:
     # TODO: Implement this method!
     def visualize_loss(self, output_file, show_charts=False):
         pass
+
+
+if __name__ == "__main__":
+
+    eta = 0.001
+    lam = 2
+
+    model = LogisticRegression(eta=eta, lam=lam)
+    model.test()

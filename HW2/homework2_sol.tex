@@ -334,20 +334,35 @@ $$p(\boldx_i, \boldy_i) = p(\boldx_i | \boldy_i )p(\boldy_i) $$
 $$= \prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
 
 where $\boldy_{ij}$ is the $j$th element of $\boldy_i$. This makes the likelihood of the data set
-$$p(D; \pi) = p( \{(\boldx_i, \boldy_i)\}_{i=1}^N; \pi)$$
+$$p(D; \bpi) = p( \{(\boldx_i, \boldy_i)\}_{i=1}^N; \pi)$$
 $$ = \prod_{i=1}^N\prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
 
 and the log-likelihood of the data set
 
-$$\ln p(D; \pi) = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln (p(\boldx_i | \boldy_i = C_j)\pi_j)$$
+$$\ln p(D; \bpi) = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln (p(\boldx_i | \boldy_i = C_j)\pi_j)$$
 $$ = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln p(\boldx_i | \boldy_i = C_j) + \ln\pi_j)$$
-
 
 \item 
 
+We want to find the following, which can be found using Lagrange Multipliers.
 
+$$\min_{\bpi} \ln p(D; \bpi) \text{ s.t. } \sum_k \pi_k -1 = 0$$
 
+This can be turned into an unconstrained problem by introducing a Lagrange multiplier
+$\lambda$ and constructing the Lagrangian function as follows
 
+$$L(\bpi, \lambda) =
+ \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln p(\boldx_i | \boldy_i = C_j) + \ln\pi_j)
+ + \lambda \left(\sum_{k=1}^K \pi_k -1 \right) $$
+
+Taking the derivative with respect to $\bpi$ and setting it to zero yields
+
+$$\frac{\partial L(\bpi, \lambda)}{\partial  \bpi} 
+=  \frac{1}{\pi_j} \sum_{i=1}^N y_{ij} + \lambda = 0$$
+
+$$\implies \pi_k = -\frac{1}{\lambda} \sum_{n=1}^N y_{nk} = -\frac{N_k}{\lambda}$$
+
+\item Isolating $\bmu_k$ in the log-likelihood yields the following
 
 \end{enumerate}
 
