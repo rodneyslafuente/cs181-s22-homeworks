@@ -330,17 +330,20 @@ $\boldX^{-\top} := (\boldX^{\top})^{-1}$
 
 For each data point $(\boldx, \boldy)\in \{(\boldx_i, \boldy_i)\}_{i=1}^N$
 we have
-$$p(\boldx_i, \boldy_i) = p(\boldx_i | \boldy_i )p(\boldy_i) $$
-$$= \prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
 
-where $\boldy_{ij}$ is the $j$th element of $\boldy_i$. This makes the likelihood of the data set
+$$p(\boldx_i, \boldy_i) = p(\boldx_i | \boldy_i )p(\boldy_i) $$
+$$= \prod_{k=1}^K (p(\boldx_i | \boldy_i = C_k)\pi_k)^{\boldy_{ik}}$$
+
+where $\boldy_{ij}$ is the $j$th element of $\boldy_i$. We add this exponent as we only 
+want the probability that a feature set $\boldx_i$ gets classified as $\boldy_i = C_k$ if 
+that feature set does in fact get classified that way. This makes the likelihood of the data set
 $$p(D; \bpi) = p( \{(\boldx_i, \boldy_i)\}_{i=1}^N; \pi)$$
-$$ = \prod_{i=1}^N\prod_{j=1}^K (p(\boldx_i | \boldy_i = C_j)\pi_j)^{\boldy_{ij}}$$
+$$ = \prod_{i=1}^N\prod_{k=1}^K (p(\boldx_i | \boldy_i = C_k)\pi_k)^{\boldy_{ik}}$$
 
 and the log-likelihood of the data set
 
-$$\ln p(D; \bpi) = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln (p(\boldx_i | \boldy_i = C_j)\pi_j)$$
-$$ = \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln p(\boldx_i | \boldy_i = C_j) + \ln\pi_j)$$
+$$\ln p(D; \bpi) = \sum_{i=1}^N \sum_{k=1}^K \boldy_{ik}(\ln (p(\boldx_i | \boldy_i = C_k)\pi_k)$$
+$$ = \sum_{i=1}^N \sum_{k=1}^K \boldy_{ik}(\ln p(\boldx_i | \boldy_i = C_k) + \ln\pi_k)$$
 
 \item 
 
@@ -352,17 +355,95 @@ This can be turned into an unconstrained problem by introducing a Lagrange multi
 $\lambda$ and constructing the Lagrangian function as follows
 
 $$L(\bpi, \lambda) =
- \sum_{i=1}^N \sum_{j=1}^K \boldy_{ij}(\ln p(\boldx_i | \boldy_i = C_j) + \ln\pi_j)
+ \sum_{i=1}^N \sum_{k=1}^K \boldy_{ik}(\ln p(\boldx_i | \boldy_i = C_k) + \ln\pi_k)
  + \lambda \left(\sum_{k=1}^K \pi_k -1 \right) $$
 
-Taking the derivative with respect to $\bpi$ and setting it to zero yields
+Now we take the partial derivative with respect to to $
+\lambda$ and with respect to $\pi_k$, to find the optimal $\bpi$.
+Taking the derivative with respect to $\pi_k$ and setting it to zero yields
 
-$$\frac{\partial L(\bpi, \lambda)}{\partial  \bpi} 
-=  \frac{1}{\pi_j} \sum_{i=1}^N y_{ij} + \lambda = 0$$
+$$\frac{\partial }{\partial \pi_k} L(\bpi, \lambda) 
+=  \frac{1}{\pi_k} \sum_{i=1}^N y_{ik} + \lambda = 0$$
 
-$$\implies \pi_k = -\frac{1}{\lambda} \sum_{n=1}^N y_{nk} = -\frac{N_k}{\lambda}$$
+$$\implies \pi_k = -\frac{1}{\lambda} \sum_{i=1}^N y_{ik} = -\frac{N_k}{\lambda}$$
 
-\item Isolating $\bmu_k$ in the log-likelihood yields the following
+where $N_k$ is the number of data points that belong to the class $C_k$. 
+Taking the partial derivative with respect to $\lambda$ yields the following
+
+$$ \frac{\partial}{\partial \lambda} L(\bpi, \lambda) = \sum_{k=1}^K \pi_k-1 = 0
+  \implies \sum_{k=1}^K \pi_k = 1 $$
+
+in order to solve for $\lambda$ we plug in our equation from before:
+
+$$ \sum_{k=1}^K \pi_k = 1 \implies \sum_{k=1}^K  -\frac{N_k}{\lambda} = 1
+\implies -\frac{N}{\lambda} = 1 \implies \lambda = -N $$
+
+and finally, we can solve for our optimal $\pi_k$, which together gives us our optimal
+$\bpi$.
+
+$$\pi_k = -\frac{N_k}{\lambda} = \frac{N_k}{N}$$
+
+This final answer is intuitive as it is simply the fraction of all of our data points 
+that belong to a class $C_k$.
+
+\item 
+
+Now that we have defined the class-conditional probabilities as Gaussian 
+distributions, our log-likelihood becomes the following, where $p$ is the number of variables/features in each $\boldx_i$ of $ (\boldx_i,\boldy_i) \in \{(\boldx_i,\boldy_i)\}_{i=1}^{N}$
+$$\ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K \boldy_{ik}(\ln  \mathcal{N}(\boldx_i |  \bmu_k, \bSigma) + \ln\pi_k)$$
+$$ = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left( \ln \left( \frac{1}{2\pi^{p/2} |\bSigma|^{1/2}} \text{exp}\left(-\frac{1}{2} (\boldx_i - \bmu_k)^\top \bSigma^{-1} (\boldx_i - \bmu_k)\right)\right) + \ln \pi_k\right) $$
+$$ = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left(  -\frac{1}{2} \ln |\bSigma| - \frac{1}{2} (\boldx_i - \bmu_k)^\top \bSigma^{-1} (\boldx_i - \bmu_k) + \ln \pi_k \right) $$ 
+
+Taking the gradient with respect to $\bmu_k$ yields the following
+
+$$ \nabla_{\bmu_k}\ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left( \bSigma^{-1} (\boldx_i - \bmu_k) \right)$$
+
+\item 
+
+In order to find the MLE of $\bmu_k$ we can use the gradient from above and set it to zero to find
+our optimal $\hat{\mu}_k$.
+
+$$ \nabla_{\bmu_k}\ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left( \bSigma^{-1} (\boldx_i - \bmu_k) \right) = 0$$
+$$ \implies \hat{\mu}_k = \frac{1}{N_k}\sum_{i=1}^N \sum_{k=1}^K  y_{ik} x_i $$
+
+where, again, $N_k$ is the number of data points that belong to the class $C_k$. This 
+solution is intuitive as it is the mean of the $\boldx_i$ whose $\boldy_i = C_k$.
+
+\item 
+
+As before, our log-likelihood is the following
+
+$$ \ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left(  -\frac{1}{2} \ln |\bSigma| - \frac{1}{2} (\boldx_i - \bmu_k)^\top \bSigma^{-1} (\boldx_i - \bmu_k) + \ln \pi_k + C\right) $$ 
+
+where $C$ is a constant. Taking the gradient with respect to $\bSigma$ yields the following
+
+$$ \nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left(  -\frac{1}{2} \nabla_\bSigma \ln |\bSigma| - \frac{1}{2} \nabla_\bSigma (\boldx_i - \bmu_k)^\top \bSigma^{-1} (\boldx_i - \bmu_k) \right) $$ 
+
+From equation 57 in the Matrix Cookbook we have the following
+
+$$  \nabla_\bSigma \ln |\bSigma| =  -\nabla_\bSigma \ln |\bSigma^{-1}| =  -\bSigma^{\top} = -\bSigma $$
+
+and from equation 72 in the Matrix Cookbook we have the following
+
+$$ \nabla_{\bSigma} (\boldx_i - \bmu_k)^\top \bSigma^{-1} (\boldx_i - \bmu_k) = (\boldx_i - \bmu_k) (\boldx_i - \bmu_k) ^\top  $$
+
+Using these two facts, our gradient becomes the following
+
+$$ \nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{ik} \left(  \frac{1}{2} \bSigma  - \frac{1}{2} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} \right) $$ 
+
+$$ =  \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top}  $$
+
+$$ =  \frac{N_k}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top}  $$
+
+where, again, $N_k$ is the number of data points classified as $C_k$.
+
+\item 
+
+Using the gradient from above and setting it to zero we get the following
+
+$$\nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) =  \frac{N_k}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} = 0$$
+
+$$ \bSigma = \frac{1}{N_k} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} = 0$$
 
 \end{enumerate}
 
@@ -480,13 +561,15 @@ values in \texttt{T2\_P3.py} for logistic regression.
 % Name and Calibration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Name}
+Rodney Lafuente Mercado
 
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?
 
+I briefly collaborated with Henry Kuo on problem 3. 
 \subsection*{Calibration}
 Approximately how long did this homework take you to complete (in hours)?
 
-
+More than 15.
 
 \end{document}
