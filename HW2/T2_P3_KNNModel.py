@@ -16,25 +16,24 @@ class KNNModel:
     def __distance(self, x_i, x_j):
         return ((x_i[0] - x_j[0]) / 3) ** 2 + (x_i[1] - x_j[1]) ** 2
 
-    def __k_nearest(self, X, x_i):
-        N = len(X)
-        distances = [(j, self.__distance(x_i, X[j])) for j in range(N)]
+    # returns indexes of nearest k data points
+    def __k_nearest(self, x_i):
+        N = len(self.X)
+        distances = [(j, self.__distance(x_i, self.X[j])) for j in range(N)]
         sorted_distances = sorted(distances, key=lambda tup: tup[1])
-        nearest_k = [X[tup[0]] for tup in sorted_distances[:self.K]]
-        return nearest_k
+        nearest_k_indexes = [tup[0] for tup in sorted_distances[:self.K]]
+        return nearest_k_indexes
 
-    # TODO: Implement this method!
     def predict(self, X_pred):
-        # The code in this method should be removed and replaced! We included it
-        # just so that the distribution code is runnable and produces a
-        # (currently meaningless) visualization.
         preds = []
-        for x in X_pred:
-
-
-
-            z = np.cos(x ** 2).sum()
-            preds.append(1 + np.sign(z) * (np.abs(z) > 0.3))
+        for x_i in X_pred:
+            votes = {}
+            for i in self.__k_nearest(x_i):
+                if self.y[i] in votes:
+                    votes[self.y[i]] += 1
+                else:
+                    votes[self.y[i]] = 1
+            preds.append(max(votes, key=votes.get))
         return np.array(preds)
 
     # In KNN, "fitting" can be as simple as storing the data, so this has been written for you
@@ -58,10 +57,10 @@ class KNNModel:
         y = np.array([star_labels[x] for x in df['Type']])
 
         self.fit(X, y)
-        self.__k_nearest(X, X[0])
-
-
-
+        self.__k_nearest(X[0])
+        y_hat = self.predict(X)
+        print(y)
+        print(y_hat)
 
 if __name__ == '__main__':
     model = KNNModel(3)
