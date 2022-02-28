@@ -16,6 +16,13 @@ class KNNModel:
     def __distance(self, x_i, x_j):
         return ((x_i[0] - x_j[0]) / 3) ** 2 + (x_i[1] - x_j[1]) ** 2
 
+    def __k_nearest(self, X, x_i):
+        N = len(X)
+        distances = [(j, self.__distance(x_i, X[j])) for j in range(N)]
+        sorted_distances = sorted(distances, key=lambda tup: tup[1])
+        nearest_k = [X[tup[0]] for tup in sorted_distances[:self.K]]
+        return nearest_k
+
     # TODO: Implement this method!
     def predict(self, X_pred):
         # The code in this method should be removed and replaced! We included it
@@ -23,6 +30,9 @@ class KNNModel:
         # (currently meaningless) visualization.
         preds = []
         for x in X_pred:
+
+
+
             z = np.cos(x ** 2).sum()
             preds.append(1 + np.sign(z) * (np.abs(z) > 0.3))
         return np.array(preds)
@@ -48,7 +58,7 @@ class KNNModel:
         y = np.array([star_labels[x] for x in df['Type']])
 
         self.fit(X, y)
-
+        self.__k_nearest(X, X[0])
 
 
 
