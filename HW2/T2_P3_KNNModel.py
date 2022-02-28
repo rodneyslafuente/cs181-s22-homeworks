@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 # Please implement the predict() method of this class
 # You can add additional private methods by beginning them with
@@ -12,9 +13,8 @@ class KNNModel:
         self.y = None
         self.K = k
 
-    # Just to show how to make 'private' methods
-    def __dummyPrivateMethod(self, input):
-        return None
+    def __distance(self, x_i, x_j):
+        return ((x_i[0] - x_j[0]) / 3) ** 2 + (x_i[1] - x_j[1]) ** 2
 
     # TODO: Implement this method!
     def predict(self, X_pred):
@@ -33,3 +33,26 @@ class KNNModel:
     def fit(self, X, y):
         self.X = X
         self.y = y
+
+    def test(self):
+        # A mapping from string name to id
+        star_labels = {
+            'Dwarf': 0,       # also corresponds to 'red' in the graphs
+            'Giant': 1,       # also corresponds to 'blue' in the graphs
+            'Supergiant': 2   # also corresponds to 'green' in the graphs
+        }
+
+        # Read from file and extract X and y
+        df = pd.read_csv('data/hr.csv')
+        X = df[['Magnitude', 'Temperature']].values
+        y = np.array([star_labels[x] for x in df['Type']])
+
+        self.fit(X, y)
+
+
+
+
+
+if __name__ == '__main__':
+    model = KNNModel(3)
+    model.test()
