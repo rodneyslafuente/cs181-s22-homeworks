@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Please implement the fit(), predict(), and visualize_loss() methods of this
 # class. You can add additional private methods by beginning them with two
@@ -8,7 +9,7 @@ import pandas as pd
 # of the given function headers (they must take and return the same arguments).
 
 class LogisticRegression:
-    def __init__(self, eta, lam, K=3, runs=5000):
+    def __init__(self, eta, lam, K=3, runs=50):
         self.eta = eta
         self.lam = lam
         self.K = K
@@ -39,7 +40,7 @@ class LogisticRegression:
                 y_ij_hat = self.__softmax(np.dot(W.T, X[i]))[j]
                 y_ij = y[i][j]
                 grad_j += (y_ij_hat - y_ij) * X[i]
-                 
+
             # add gradient of L2 regularization term
             grad_j += self.lam * W.T[j]
             grad.append(grad_j)
@@ -50,7 +51,17 @@ class LogisticRegression:
         # as said matrix/vector (hence the transpose)
         return np.array(grad).T
 
-    def fit(self, X, y):
+    def __negLogLikLoss(self, X, y, W):
+        N = len(X)
+        loss = 0
+        for i in range(N):
+            for j in range(self.K):
+                y_ij_hat = self.__softmax(np.dot(W.T, X[i]))[j]
+                y_ij = y[i][j]
+                loss -= y_ij * np.log(y_ij_hat)
+        return loss
+
+    def fit(self, X, y, track_loss=True):
         # Encode y as one-hot vectors
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
 
@@ -61,10 +72,15 @@ class LogisticRegression:
         self.W = np.random.rand(X_with_bias.shape[1], self.K)  
         new_W = np.empty_like(self.W)
 
+        # array to track loss
+        self.losses = np.zeros(self.runs)
+
         # Optimize weights
-        for _ in range(self.runs):
+        for i in range(self.runs):
             gradient = self.__gradient(X_with_bias, encoded_y, self.W)
             new_W = self.W - (self.eta * gradient)
+            if track_loss:
+                self.losses[i] = self.__negLogLikLoss(X_with_bias, encoded_y, self.W)
             self.W = new_W
 
     def predict(self, X_pred):
@@ -75,9 +91,15 @@ class LogisticRegression:
             preds.append(np.argmax(y_i_hat)) 
         return np.array(preds)
 
-    # TODO: Implement this method!
     def visualize_loss(self, output_file, show_charts=False):
-        pass
+        plt.figure()
+        plt.title('Logistic Regression Loss with eta='+str(self.eta)+' and lambda='+str(self.lam))
+        plt.xlabel('Number of Iterations')
+        plt.ylabel('Negative Log-Likelihood Loss')
+        plt.plot(np.arange(self.runs), self.losses, '-o')
+        plt.savefig(output_file)
+        if show_charts:
+            plt.show()
 
     def test(self):
         # A mapping from string name to id
@@ -112,7 +134,12 @@ class LogisticRegression:
         self.fit(X, y)
 
         # predict (runs)
-        self.predict(X)
+        y_hat = self.predict(X)
+        print('Actual y:\n', y, '\nPredicted y:\n', y_hat)
+
+        # plot losses
+        output_file = 'logistic_losses.png'
+        self.visualize_loss(output_file=output_file, show_charts=True)
 
 if __name__ == "__main__":
     eta = 0.001
