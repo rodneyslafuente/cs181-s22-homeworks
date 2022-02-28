@@ -103,7 +103,7 @@ class GaussianGenerativeModel:
 
     def negative_log_likelihood(self, X, y):
         N = len(X)
-        loss = 0
+        log_like = 0
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
         for i in range(N):
             for k in range(self.K):
@@ -113,8 +113,8 @@ class GaussianGenerativeModel:
                 if self.is_shared_covariance:
                     Sigma_to_use = self.Sigma
                 if encoded_y[i][k] == 1:
-                    loss += np.log(mvn.pdf(X[i], self.mu[k], Sigma_to_use) * self.pi[k])
-        return loss
+                    log_like += np.log(mvn.pdf(X[i], self.mu[k], Sigma_to_use) * self.pi[k])
+        return -log_like
 
     def test(self):
         # A mapping from string name to id
@@ -139,7 +139,7 @@ class GaussianGenerativeModel:
         print(loss)
 
         self.is_shared_covariance = True
-        
+
         self.fit(X, y)
         y_hat = self.predict(X)
         loss = self.negative_log_likelihood(X, y_hat)

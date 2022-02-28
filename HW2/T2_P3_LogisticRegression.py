@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # of the given function headers (they must take and return the same arguments).
 
 class LogisticRegression:
-    def __init__(self, eta, lam, K=3, runs=200):
+    def __init__(self, eta, lam, K=3, runs=200000):
         self.eta = eta
         self.lam = lam
         self.K = K

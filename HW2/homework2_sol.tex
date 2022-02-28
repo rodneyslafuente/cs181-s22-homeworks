@@ -558,19 +558,98 @@ values in \texttt{T2\_P3.py} for logistic regression.
 
 \begin{enumerate}
 
-\item 
-\newpage
-\begin{figure}[h]
-\includegraphics[scale=0.8]{logistic_regression_loss.png}
-\centering
-\end{figure}
-
+\item Below are the plots of the decision boundaries for each classifier.
 \newpage
 \begin{figure}[h]
 \includegraphics[scale=0.8]{logistic_regression_result.png}
 \centering
 \end{figure}
 
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{generative_result_separate_covariances.png}
+\centering
+\end{figure}
+
+
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{generative_result_shared_covariances.png}
+\centering
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{knn1_result.png}
+\centering
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{knn3_result.png}
+\centering
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{knn5_result.png}
+\centering
+\end{figure}
+
+\item Below is the plot of the Negative Log-Likelihood Loss
+of the logistic regression model vs the iteration number
+
+\newpage
+\begin{figure}[h]
+\includegraphics[scale=0.8]{logistic_losses.png}
+\centering
+\end{figure}
+
+My final choice for eta is 0.001 and for lambda is 0.05.
+The choice for eta reasonable as the logistic regression model 
+converges very quickly, and, as such, requires a very small 
+step size. Making eta too big (e.g. 0.1) disables the ability 
+of the model to converge and instead the loss is very volatile; 
+the final loss is high. The choice for lambda is reasonable as 
+it does not penalize weights so much that the model is unable to 
+converge. Increasing lambda makes the rate of converging much slower.
+
+\item
+
+The two losses are as follows:
+
+Separate Covariance negative log-likelihood: 63.97035984092419
+
+Shared Covariance negative log-likelihood: 116.39446507788162
+
+The model with the shared covariance has greater loss. This is because
+the decision boundary becomes linear when using a shared covariance.
+
+\item
+The predictions are as follows:
+
+Test star type predictions for Separate Covariance Gaussian Model:
+magnitude 6 and temperature 2: 0
+
+Test star type predictions for Shared Covariance Gaussian Model:
+magnitude 6 and temperature 2: 1
+
+Test star type predictions for Linear Regression:
+magnitude 6 and temperature 2: 1
+
+Test star type predictions for KNN Model with k=1:
+magnitude 6 and temperature 2: 0
+
+Test star type predictions for KNN Model with k=3:
+magnitude 6 and temperature 2: 0
+
+Test star type predictions for KNN Model with k=5:
+magnitude 6 and temperature 2: 0
+
+All models seem trustworthy, except for the Separate Covariance Gaussian
+Model. This model seems that it is over-fitting with respect to 
+the dataset and not sufficiently generalizing the assumptions it 
+it is making about the dataset.
 
 \end{enumerate}
 
