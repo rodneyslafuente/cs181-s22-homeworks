@@ -59,15 +59,11 @@ class LogisticRegression:
             new_W = self.W - (self.eta * gradient)
             self.W = new_W
 
-    # TODO: Implement this method!
     def predict(self, X_pred):
-        # The code in this method should be removed and replaced! We included it
-        # just so that the distribution code is runnable and produces a
-        # (currently meaningless) visualization.
         preds = []
-        for x in X_pred:
-            z = np.cos(x ** 2).sum()
-            preds.append(1 + np.sign(z) * (np.abs(z) > 0.3))
+        for x_i in X_pred:
+            y_i_hat = self.__softmax(np.dot(self.W.T, x_i))
+            preds.append(np.argmax(y_i_hat)) 
         return np.array(preds)
 
     # TODO: Implement this method!
@@ -102,10 +98,13 @@ class LogisticRegression:
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
         self.W = np.random.rand(X.shape[1], self.K)        
         grad = self.__gradient(X, encoded_y, self.W)
-        print(self.W.shape, grad.shape)
 
-        # fit
+        # fit (runs)
         self.fit(X, y)
+
+        # predict (runs)
+        y_hat = self.predict(X)
+
 
 
 
