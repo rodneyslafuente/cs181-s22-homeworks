@@ -1,9 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
-
-
 # Please implement the fit(), predict(), and visualize_loss() methods of this
 # class. You can add additional private methods by beginning them with two
 # underscores. It may look like the __dummyPrivateMethod below. You can feel
@@ -11,41 +8,56 @@ import pandas as pd
 # of the given function headers (they must take and return the same arguments).
 
 class LogisticRegression:
-    def __init__(self, eta, lam, K):
+    def __init__(self, eta, lam, K=3, runs=10):
         self.eta = eta
         self.lam = lam
         self.K = K
+        self.runs = runs
 
     def __softmax(self, z):
         denom = sum([np.exp(z_j) for z_j in z])
         probs = [np.exp(z_i) / denom for z_i in z]
-        return np.array(probs)
+        return np.array(probs).reshape(-1, 1)
 
-    def __gradient(self, X, y, W):
-        # gradient = np.zeros((x.shape[1], ))
-
-        # for i in range(len(x)):
-        #     x_i = x[i]
-        #     y_i = y[i][0]
-        #     y_i_hat = self.__logSigmoid(np.dot(W.T, x_i))
-        #     gradient += (y_i_hat - y_i) * x_i
-        # gradient = gradient.reshape(-1, 1)
-
-        # return gradient
-        N = len(X)
-        grad = 0
-
-        for j in range(self.K):
-            grad_j = 0
-            for i in range(N):
-                
-                grad_j += 
-
+    def __add_bias(self, X):
         pass
 
-    # TODO: Implement this method!
-    def fit(self, X, y, W):
-        return
+    def __one_hot(self, y):
+        encoding = np.zeros(self.K)
+        encoding[y] = 1
+        return encoding.reshape(-1, 1)
+
+    def __gradient(self, X, y, W):
+        N = len(X)
+        grad = []
+
+        for j in range(self.K):
+            grad_j = np.zeros_like(X[0])
+            for i in range(N):
+                y_ij_hat = self.__softmax(np.dot(W.T, X[i]))[j]
+                y_ij = y[i][j]
+                grad_j += (y_ij_hat - y_ij) * X[i]
+            grad.append(grad_j)
+
+        # Ed Post #254: we adopt the convention that 
+        # the derivative of a scalar function with respect
+        # to a matrix/vector has the same dimensions and orientation
+        # as said matrix/vector (hence the transpose)
+        return np.array(grad).T
+
+    def fit(self, X, y):
+        # Assumes y is not encoded as one-hot vectors
+        encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
+
+        # Initializes weight matrix
+        self.W = np.random.rand(X.shape[1], self.K)  
+        new_W = np.empty_like(self.W)
+
+        # Optimize weights
+        for _ in range(self.runs):
+            gradient = self.__gradient(X, encoded_y, self.W)
+            new_W = self.W - (self.eta * gradient)
+            self.W = new_W
 
     # TODO: Implement this method!
     def predict(self, X_pred):
@@ -75,14 +87,25 @@ class LogisticRegression:
         X = df[['Magnitude', 'Temperature']].values
         y = np.array([star_labels[x] for x in df['Type']])
 
+        # one_hot
+        self.K = 3
+        y_i = 1
+        encoded_y_i = self.__one_hot(y_i)
+        assert(np.array_equal(encoded_y_i, np.array([[0], [1], [0]])))
+    
         # softmax
         z = np.array([4, 1, 7])
         sm = self.__softmax(z)
-        assert(np.array_equal(np.around(sm, 3), np.array([0.047, 0.002, 0.950])))
+        assert(np.array_equal(np.around(sm, 3), np.array([[0.047], [0.002], [0.950]])))
 
-        # gradient
-        self.W = np.random.rand(X.shape[1], 1)        
-        self.__gradient(X, y, self.W)
+        # gradient (runs)
+        encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
+        self.W = np.random.rand(X.shape[1], self.K)        
+        grad = self.__gradient(X, encoded_y, self.W)
+        print(self.W.shape, grad.shape)
+
+        # fit
+        self.fit(X, y)
 
 
 
