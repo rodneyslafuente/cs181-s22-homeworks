@@ -19,8 +19,8 @@ class LogisticRegression:
         probs = [np.exp(z_i) / denom for z_i in z]
         return np.array(probs).reshape(-1, 1)
 
-    def __add_bias(self, X):
-        pass
+    def __add_bias(self, X):        
+        return np.insert(X, 0, 1, axis=1)
 
     def __one_hot(self, y):
         encoding = np.zeros(self.K)
@@ -46,22 +46,26 @@ class LogisticRegression:
         return np.array(grad).T
 
     def fit(self, X, y):
-        # Assumes y is not encoded as one-hot vectors
+        # Encode y as one-hot vectors
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
 
+        # Add bias variable to design matrix
+        X_with_bias = self.__add_bias(X)
+
         # Initializes weight matrix
-        self.W = np.random.rand(X.shape[1], self.K)  
+        self.W = np.random.rand(X_with_bias.shape[1], self.K)  
         new_W = np.empty_like(self.W)
 
         # Optimize weights
         for _ in range(self.runs):
-            gradient = self.__gradient(X, encoded_y, self.W)
+            gradient = self.__gradient(X_with_bias, encoded_y, self.W)
             new_W = self.W - (self.eta * gradient)
             self.W = new_W
 
     def predict(self, X_pred):
         preds = []
-        for x_i in X_pred:
+        X_pred_with_bias = self.__add_bias(X_pred)
+        for x_i in X_pred_with_bias:
             y_i_hat = self.__softmax(np.dot(self.W.T, x_i))
             preds.append(np.argmax(y_i_hat)) 
         return np.array(preds)
@@ -88,7 +92,7 @@ class LogisticRegression:
         y_i = 1
         encoded_y_i = self.__one_hot(y_i)
         assert(np.array_equal(encoded_y_i, np.array([[0], [1], [0]])))
-    
+
         # softmax
         z = np.array([4, 1, 7])
         sm = self.__softmax(z)
@@ -104,9 +108,6 @@ class LogisticRegression:
 
         # predict (runs)
         y_hat = self.predict(X)
-
-
-
 
 if __name__ == "__main__":
     eta = 0.001
