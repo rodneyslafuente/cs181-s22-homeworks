@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from scipy.stats import multivariate_normal as mvn  # you may find this useful
 
-
 # Please implement the fit(), predict(), and negative_log_likelihood() methods
 # of this class. You can add additional private methods by beginning them with
 # two underscores. It may look like the __dummyPrivateMethod below. You can feel
@@ -92,6 +91,8 @@ class GaussianGenerativeModel:
             # ignore this scalar)
             probs_for_x = np.zeros(self.K)
             for k in range(self.K):
+                # Here we pick whether we are using a shared or individual covariance
+                # matrix for each class
                 Sigma_to_use = self.Sigma_list[k]
                 if self.is_shared_covariance:
                     Sigma_to_use = self.Sigma
@@ -100,9 +101,20 @@ class GaussianGenerativeModel:
             preds.append(np.argmax(probs_for_x))
         return np.array(preds)
 
-    # TODO: Implement this method!
     def negative_log_likelihood(self, X, y):
-        pass
+        N = len(X)
+        loss = 0
+        encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
+        for i in range(N):
+            for k in range(self.K):
+                # Here we pick whether we are using a shared or individual covariance
+                # matrix for each class
+                Sigma_to_use = self.Sigma_list[k]
+                if self.is_shared_covariance:
+                    Sigma_to_use = self.Sigma
+                if encoded_y[i][k] == 1:
+                    loss += np.log(mvn.pdf(X[i], self.mu[k], Sigma_to_use) * self.pi[k])
+        return loss
 
     def test(self):
         # A mapping from string name to id
@@ -123,8 +135,15 @@ class GaussianGenerativeModel:
 
         self.fit(X, y)
         y_hat = self.predict(X)
-        print(y)
-        print(y_hat)
+        loss = self.negative_log_likelihood(X, y_hat)
+        print(loss)
+
+        self.is_shared_covariance = True
+        
+        self.fit(X, y)
+        y_hat = self.predict(X)
+        loss = self.negative_log_likelihood(X, y_hat)
+        print(loss)
 
 if __name__ == '__main__':
     model = GaussianGenerativeModel()
