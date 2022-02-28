@@ -8,7 +8,7 @@ import pandas as pd
 # of the given function headers (they must take and return the same arguments).
 
 class LogisticRegression:
-    def __init__(self, eta, lam, K=3, runs=10):
+    def __init__(self, eta, lam, K=3, runs=5000):
         self.eta = eta
         self.lam = lam
         self.K = K
@@ -33,10 +33,15 @@ class LogisticRegression:
 
         for j in range(self.K):
             grad_j = np.zeros_like(X[0])
+
+            # add gradient of cross entropy loss
             for i in range(N):
                 y_ij_hat = self.__softmax(np.dot(W.T, X[i]))[j]
                 y_ij = y[i][j]
                 grad_j += (y_ij_hat - y_ij) * X[i]
+                 
+            # add gradient of L2 regularization term
+            grad_j += self.lam * W.T[j]
             grad.append(grad_j)
 
         # Ed Post #254: we adopt the convention that 
@@ -101,13 +106,13 @@ class LogisticRegression:
         # gradient (runs)
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
         self.W = np.random.rand(X.shape[1], self.K)        
-        grad = self.__gradient(X, encoded_y, self.W)
+        self.__gradient(X, encoded_y, self.W)
 
         # fit (runs)
         self.fit(X, y)
 
         # predict (runs)
-        y_hat = self.predict(X)
+        self.predict(X)
 
 if __name__ == "__main__":
     eta = 0.001
