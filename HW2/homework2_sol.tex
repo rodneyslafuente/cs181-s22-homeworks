@@ -433,7 +433,7 @@ $$ \nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) = \sum_{i=1}^N \sum_{k=1}^K  y_{
 
 $$ =  \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top}  $$
 
-$$ =  \frac{N_k}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top}  $$
+$$ =  \frac{N}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top}  $$
 
 where, again, $N_k$ is the number of data points classified as $C_k$.
 
@@ -441,9 +441,9 @@ where, again, $N_k$ is the number of data points classified as $C_k$.
 
 Using the gradient from above and setting it to zero we get the following
 
-$$\nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) =  \frac{N_k}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} = 0$$
+$$\nabla_\bSigma \ln p(D; \bpi, \bmu, \bSigma) =  \frac{N}{2} \bSigma  - \frac{1}{2} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} = 0$$
 
-$$ \bSigma = \frac{1}{N_k} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} $$
+$$ \bSigma = \frac{1}{N} \sum_{i=1}^N \sum_{k=1}^K y_{ik} (\boldx_i - \bmu_k)(\boldx_i - \bmu_k)^{\top} $$
 
 \end{enumerate}
 
