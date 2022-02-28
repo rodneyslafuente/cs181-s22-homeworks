@@ -46,33 +46,58 @@ class GaussianGenerativeModel:
     def __fitSigma(self, X, y):
         N = len(X)
         encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
-        self.Sigma = np.zeros((X.shape[1], X.shape[1]))
 
+        # counts[k] = no. data points classified as C_k (scalar)
+        counts = np.zeros(self.K)
         for i in range(N):
-            for k in range(self.K):
-                term_to_add = encoded_y[i][k] * np.dot((X[i] - self.mu[k]).reshape(-1, 1), (X[i] - self.mu[k]).reshape(-1, 1).T)
-                assert(term_to_add.shape == self.Sigma.shape)
-                self.Sigma += term_to_add
-        
-        self.Sigma /= N
-    # TODO: Implement this method!
-    def fit(self, X, y):
-        encoded_y = np.array([self.__one_hot(y_i) for y_i in y])
+            counts[y[i]] += 1
 
+        # Number of features in a data point (in our case, this is 2)
+        p = X.shape[1]
+        assert(p == 2)
+
+        # Fit a list of different covariance matrices for each class. 
+        # Sigma_list[k] = covariance matrix for class C_k
+        self.Sigma_list = np.zeros((self.K, p, p))
+
+        for k in range(self.K):
+            Sigma_k = np.zeros((p, p))
+            for i in range(N):
+                Sigma_k += encoded_y[i][k] * np.dot((X[i] - self.mu[k]).reshape(-1, 1), (X[i] - self.mu[k]).reshape(-1, 1).T)
+            Sigma_k /= counts[k]
+            self.Sigma_list[k] = Sigma_k
+
+        assert(self.Sigma_list.shape == (self.K, p, p))
+        
+        # Find the average of all covariance matrices for each class.
+        # Set this average as the shared covariance matrix for all classes.
+        self.Sigma = np.zeros((p, p))
+
+        for k in range(self.K):
+            self.Sigma += (counts[k] / N) * (self.Sigma_list[k])
+
+        assert(self.Sigma.shape == (p, p))
+ 
+    def fit(self, X, y):
         self.__fitPi(X, y)
         self.__fitMu(X, y)
         self.__fitSigma(X, y)
-        return 
 
-    # TODO: Implement this method!
     def predict(self, X_pred):
-        # The code in this method should be removed and replaced! We included it
-        # just so that the distribution code is runnable and produces a
-        # (currently meaningless) visualization.
         preds = []
-        for x in X_pred:
-            z = np.sin(x ** 2).sum()
-            preds.append(1 + np.sign(z) * (np.abs(z) > 0.3))
+        for x_i in X_pred:
+            # probs_for_x[k] = probability that x is classified as C_k, times 
+            # a scalar that is the same for all items in the list (we are only
+            # concerned with picking the greatest value in this list, so we can 
+            # ignore this scalar)
+            probs_for_x = np.zeros(self.K)
+            for k in range(self.K):
+                Sigma_to_use = self.Sigma_list[k]
+                if self.is_shared_covariance:
+                    Sigma_to_use = self.Sigma
+                # Here we use Bayes' rule to make a prediction
+                probs_for_x[k] = mvn.pdf(x_i, self.mu[k], Sigma_to_use) * self.pi[k]
+            preds.append(np.argmax(probs_for_x))
         return np.array(preds)
 
     # TODO: Implement this method!
@@ -95,6 +120,11 @@ class GaussianGenerativeModel:
         self.__fitPi(X, y)
         self.__fitMu(X, y)
         self.__fitSigma(X, y)
+
+        self.fit(X, y)
+        y_hat = self.predict(X)
+        print(y)
+        print(y_hat)
 
 if __name__ == '__main__':
     model = GaussianGenerativeModel()

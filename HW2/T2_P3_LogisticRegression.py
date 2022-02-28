@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # of the given function headers (they must take and return the same arguments).
 
 class LogisticRegression:
-    def __init__(self, eta, lam, K=3, runs=50):
+    def __init__(self, eta, lam, K=3, runs=200):
         self.eta = eta
         self.lam = lam
         self.K = K
@@ -96,7 +96,7 @@ class LogisticRegression:
         plt.title('Logistic Regression Loss with eta='+str(self.eta)+' and lambda='+str(self.lam))
         plt.xlabel('Number of Iterations')
         plt.ylabel('Negative Log-Likelihood Loss')
-        plt.plot(np.arange(self.runs), self.losses, '-o')
+        plt.plot(np.arange(self.runs), self.losses, '-')
         plt.savefig(output_file)
         if show_charts:
             plt.show()
