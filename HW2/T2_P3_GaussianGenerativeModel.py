@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy.stats import multivariate_normal as mvn  # you may find this useful
 
 
@@ -9,12 +10,26 @@ from scipy.stats import multivariate_normal as mvn  # you may find this useful
 # of the given function headers (they must take and return the same arguments).
 
 class GaussianGenerativeModel:
-    def __init__(self, is_shared_covariance=False):
+    def __init__(self, is_shared_covariance=False, K=3):
         self.is_shared_covariance = is_shared_covariance
+        self.K = K
 
-    # Just to show how to make 'private' methods
-    def __dummyPrivateMethod(self, input):
-        return None
+    def __fitPi(self, X, y):
+        pi = []
+        N = len(X)
+
+        # count number of occurrences of each class
+        counts = np.zeros(self.K)
+        for i in range(N):
+            counts[y[i]] += 1
+        
+        self.pi = np.array([counts[k] / N for k in range(self.K)])
+
+    def __fitMu(self, X, y):
+        pass
+
+    def __fitSigma(self, X, y):
+        pass
 
     # TODO: Implement this method!
     def fit(self, X, y):
@@ -34,3 +49,22 @@ class GaussianGenerativeModel:
     # TODO: Implement this method!
     def negative_log_likelihood(self, X, y):
         pass
+
+    def test(self):
+        # A mapping from string name to id
+        star_labels = {
+            'Dwarf': 0,       # also corresponds to 'red' in the graphs
+            'Giant': 1,       # also corresponds to 'blue' in the graphs
+            'Supergiant': 2   # also corresponds to 'green' in the graphs
+        }
+
+        # Read from file and extract X and y
+        df = pd.read_csv('data/hr.csv')
+        X = df[['Magnitude', 'Temperature']].values
+        y = np.array([star_labels[x] for x in df['Type']])
+
+        self.__fitPi(X, y)
+
+if __name__ == '__main__':
+    model = GaussianGenerativeModel()
+    model.test()
