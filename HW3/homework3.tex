@@ -230,7 +230,9 @@ c) If $n\bar{x} > 0$, then $\mu_{MLE} < \mu_{MAP}$.
 
 \item
 
-$$\lim_{n \rightarrow \infty} \frac{\mu_{MAP}}{\mu_{MLE}} = $$
+We have $\mu_{MAP} = \frac{\tau^2n\bar{x}}{\tau^2n + \sigma^2} = \frac{\bar{x}}{1+\frac{\sigma^2}{\tau^2 n}}$.
+
+$$\lim_{n\rightarrow\infty} \frac{\mu_{MAP}}{\mu_{MLE}} = \lim_{n\rightarrow\infty}\frac{ \frac{\bar{x}}{1+\frac{\sigma^2}{\tau^2 n}}}{\bar{x}} =  \lim_{n\rightarrow\infty}\frac{1}{1+\frac{\sigma^2}{\tau^2 n}}  = 1$$
 
 
 \end{enumerate}
