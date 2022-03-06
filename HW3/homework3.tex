@@ -179,7 +179,18 @@ $$\mu|D\sim\mathcal{N}\left(\frac{n\tau^2\bar{x}}{\sigma^2+n\tau^2}, \left(\frac
 
 \item
 
-a) 
+a) $$\mu_{MLE} = \underset{\mu}{\mathrm{argmax}} \,\,p(D|\mu)$$
+
+We find this value by calculating the derivative w.r.t. $\mu$ of $\ln p(D|\mu)$ and setting it to zero. 
+We use the simplification of $p(D|\mu)$ from the previous problem.
+
+$$p(D|\mu) \propto_\mu \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right)\right) $$
+$$\ln p(D|\mu) \propto_\mu -\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) $$
+$$\frac{\partial}{\partial\mu} p(D|\mu) = \frac{n\bar{x}}{2\sigma^2} - \frac{n\mu}{2\sigma^2} = 0  $$
+$$\implies\mu_{MLE} = \bar{x} $$
+
+
+
 
 \end{enumerate}
 
