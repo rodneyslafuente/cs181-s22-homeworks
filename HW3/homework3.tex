@@ -186,9 +186,21 @@ We use the simplification of $p(D|\mu)$ from the previous problem.
 
 $$p(D|\mu) \propto_\mu \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right)\right) $$
 $$\ln p(D|\mu) \propto_\mu -\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) $$
-$$\frac{\partial}{\partial\mu} p(D|\mu) = \frac{n\bar{x}}{2\sigma^2} - \frac{n\mu}{2\sigma^2} = 0  $$
+$$\frac{\partial}{\partial\mu} \ln p(D|\mu) = \frac{n\bar{x}}{\sigma^2} - \frac{n\mu}{\sigma^2} = 0  $$
 $$\implies\mu_{MLE} = \bar{x} $$
 
+b) $$\mu_{MAP} = \underset{\mu}{\mathrm{argmax}} \,\,p(\mu|D) = \underset{\mu}{\mathrm{argmax}} \,\,p(D|\mu)p(\mu)$$
+Again, we take the derivative of $\ln p(D|\mu)p(\mu)$ w.r.t. $\mu$ and set it to zero. We use the simplification of $p(D|\mu)p(\mu)$ from the 
+previous problem.
+$$p(D|\mu)p(\mu) \propto_\mu \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) - \frac{1}{2\tau^2}  \mu^2\right)$$
+$$\ln p(D|\mu)p(\mu) \propto_\mu -\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) - \frac{1}{2\tau^2}  \mu^2$$
+$$\frac{\partial}{\partial \mu} \ln p(D|\mu)p(\mu) = \frac{n\bar{x}}{\sigma^2} - \frac{n\mu}{\sigma^2} - \frac{\mu}{\tau^2} = 0$$
+$$\implies \frac{n\bar{x}}{\sigma^2} - \frac{n\mu_{MLE}}{\sigma^2} - \frac{\mu_{MLE}}{\tau^2} = 0$$
+$$\implies \tau^2n\bar{x} - \tau^2n\mu_{MLE} - \sigma^2\mu_{MLE} = 0$$
+$$\implies (\tau^2n + \sigma^2)\mu_{MLE} = \tau^2n\bar{x}$$
+$$\implies \mu_{MLE} = \frac{\tau^2n\bar{x}}{\tau^2n + \sigma^2}$$
+
+c) $\mu_{MAP}$ is equal to the mean of $x|D$
 
 
 
