@@ -134,6 +134,55 @@ $$\lim_{n \rightarrow \infty} \frac{\mu_{MAP}}{\mu_{MLE}}$$
 
 \subsection*{Solution:}
 
+\begin{enumerate}
+
+\item 
+Using Bayes' rule, we have
+
+$$p(\mu|D) \propto p(D|\mu)p(\mu)$$
+
+and as the likelihood of $D|\mu$ we have the following:
+
+$$p(D|\mu) = \prod_i p(x_i|\mu) = (2\pi\sigma^2)^{-n/2}\exp\left(-\frac{1}{2\sigma^2} \sum_i (x_i-\mu)^2\right)$$
+$$\propto_\mu \exp\left(-\frac{1}{2\sigma^2} \sum_i (x_i-\mu)^2\right) $$
+$$ = \exp\left(-\frac{1}{2\sigma^2} \sum_i (x_i^2 - 2x_i\mu + \mu^2)\right) $$
+$$ = \exp\left(-\frac{1}{2\sigma^2} \left(\sum_i x_i^2 - 2\mu \sum_i x_i + \sum_i \mu^2\right)\right) $$
+$$ \propto_\mu \exp\left(-\frac{1}{2\sigma^2} \left( - 2\mu \sum_i x_i + \sum_i \mu^2\right)\right) $$
+$$ = \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right)\right) $$
+
+We also know that the prior for $\mu$ is the following, since $\mu\sim \mathcal{N}(0, \tau^2)$
+
+$$p(\mu) \propto \exp\left(-\frac{1}{2\tau^2}  (\mu-0)^2\right) = \exp\left(-\frac{1}{2\tau^2}  \mu^2\right) $$
+
+Multiplying these two to get $P(\mu|D)$ yields the following
+
+$$p(\mu|D) \propto p(D|\mu)p(\mu) = \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right)\right)  \exp\left(-\frac{1}{2\tau^2}  \mu^2\right)$$
+$$ = \exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) - \frac{1}{2\tau^2}  \mu^2\right)$$
+
+The product of two Gaussian is a Gaussian, so we know that the above equation can be 
+expressed as one. In order to find what the parameters $\sigma_{new}, \mu_{new}$ are of 
+this new distribution, we can deduce from the coefficients of $\mu^2$ and $\mu$ above 
+what they are.
+
+$$\exp\left(-\frac{n}{2\sigma^2} \left( - 2\mu \bar{x} + \mu^2\right) - \frac{1}{2\tau^2}  \mu^2\right) \stackrel{\text{def}}{=} \exp\left(-\frac{1}{2\sigma_{new}^2}(\mu^2 - 2\mu\mu_{new} + \mu_{new}^2) \right)$$
+First we find $\sigma_{new}^2$:
+$$ \implies -\frac{1}{2\sigma_{new}^2} \mu^2  = -\frac{1}{2}\left(\frac{1}{\tau^2}+\frac{n}{\sigma^2}\right) $$
+$$ \implies \sigma_{new}^2 = \left(\frac{1}{\tau^2}+\frac{n}{\sigma^2}\right)^{-1} $$
+and also $\mu_{new}^2$:
+$$ \implies  -\frac{1}{2\sigma_{new}^2} (-2\mu\mu_{new}) = \mu\left(\frac{n\bar{x}}{\sigma^2}\right)$$
+$$ \implies  \frac{\mu_{new}}{\sigma_{new}^2} = \frac{n\bar{x}}{\sigma^2}$$
+$$ \implies  \mu_{new}= \frac{\frac{n\bar{x}}{\sigma^2}}{\frac{1}{\tau^2}+\frac{n}{\sigma^2}}=\frac{n\tau^2\bar{x}}{\sigma^2+n\tau^2}$$
+
+
+Giving us our distribution of $\mu|D$:
+$$\mu|D\sim\mathcal{N}\left(\frac{n\tau^2\bar{x}}{\sigma^2+n\tau^2}, \left(\frac{1}{\tau^2}+\frac{n}{\sigma^2}\right)^{-1}\right)$$
+
+\item
+
+a) 
+
+\end{enumerate}
+
 
 \newpage
 
