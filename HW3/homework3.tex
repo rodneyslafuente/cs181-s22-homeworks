@@ -232,7 +232,7 @@ c) If $n\bar{x} > 0$, then $\mu_{MLE} < \mu_{MAP}$.
 
 We have $\mu_{MAP} = \frac{\tau^2n\bar{x}}{\tau^2n + \sigma^2} = \frac{\bar{x}}{1+\frac{\sigma^2}{\tau^2 n}}$.
 
-$$\lim_{n\rightarrow\infty} \frac{\mu_{MAP}}{\mu_{MLE}} = \lim_{n\rightarrow\infty}\frac{ \frac{\bar{x}}{1+\frac{\sigma^2}{\tau^2 n}}}{\bar{x}} =  \lim_{n\rightarrow\infty}\frac{1}{1+\frac{\sigma^2}{\tau^2 n}}  = 1$$
+$$\lim_{n\rightarrow\infty} \frac{\mu_{MAP}}{\mu_{MLE}} = \lim_{n\rightarrow\infty}\frac{ \frac{\bar{x}}{1+\frac{\sigma^2}{\tau^2 n}}}{\bar{x}} =  \lim_{n\rightarrow\infty}\frac{1}{1+\frac{\sigma^2}{\tau^2 n}} = 1$$
 
 
 \end{enumerate}
@@ -271,7 +271,33 @@ $$\lim_{n\rightarrow\infty} \frac{\mu_{MAP}}{\mu_{MLE}} = \lim_{n\rightarrow\inf
 
 \subsection*{Solution:}
 
-This is part of the solution m
+\begin{enumerate}
+
+\item 
+
+Using Bayes' rule, we have 
+
+$$p(\mathbf{w}|X,y) \propto_w p(\mathbf{y}|\mathbf{X},\mathbf{w}) p(\mathbf{w})$$
+$$=\left( \prod_i p(y_i|\mathbf{x}_i,\mathbf{w}) \right) p(\mathbf{w})$$
+
+We are assuming that $y_i= \mathbf{w}^\top \mathbf{x}_i + \epsilon_i$ with $\epsilon \sim \mathcal{N}(0, \sigma^2)$,
+so we have $y_i\sim \mathcal{N}(\mathbf{w}^\top \mathbf{x}_i, \sigma^2)$. Plugging this in along with the 
+distribution of our prior $p(\mathbf{w})$ defined in the problem prompt above, we have
+
+$$p(\mathbf{w}|X,y) \propto_w 
+\left(\prod_i (2\pi\sigma^2)^{-1/2}\exp\left(-\frac{1}{2\sigma^2}(y_i-\mathbf{w}^\top \mathbf{x}_i)^2\right) \right)
+\left(\frac{1}{2\tau} \exp\left(-\frac{\|\mathbf{w}-\mathbf{\mu}\|_1}{\tau}\right)\right)$$
+
+$$ \propto_w  \left(\prod_i \exp\left(-\frac{1}{2\sigma^2}(y_i-\mathbf{w}^\top \mathbf{x}_i)^2\right)\right) \exp\left(-\frac{\|\mathbf{w}-\mathbf{\mu}\|_1}{\tau}\right)$$
+
+$$ = \exp\left(-\frac{1}{2\sigma^2}\sum_i(y_i-\mathbf{w}^\top \mathbf{x}_i)^2\right) \exp\left(-\frac{\|\mathbf{w}-\mathbf{\mu}\|_1}{\tau}\right)$$
+
+$$ p(\mathbf{w}|X,y)\propto_w \exp\left(-\frac{1}{2\sigma^2}\|\mathbf{Xw}-\mathbf{y}\|_2 -\frac{1}{\tau}\|\mathbf{w}-\mathbf{\mu}\|_1\right)$$
+
+\item 
+
+
+\end{enumerate}
 
 
 \newpage
