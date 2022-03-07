@@ -296,6 +296,42 @@ $$ p(\mathbf{w}|X,y)\propto_w \exp\left(-\frac{1}{2\sigma^2}\|\mathbf{Xw}-\mathb
 
 \item 
 
+The MAP estimate is defined as the following
+
+$$\mathbf{w}_{MAP} = \underset{\mu}{\mathrm{argmax}} \,\, p(\mathbf{w}|\mathbf{X},\mathbf{y})= \underset{\mu}{\mathrm{argmax}} \,\, p(\mathbf{y}|\mathbf{X},\mathbf{w})p(\mathbf{w})= \underset{\mu}{\mathrm{argmax}} \,\, \ln p(\mathbf{y}|\mathbf{X},\mathbf{w})p(\mathbf{w})$$
+
+$$= \underset{\mu}{\mathrm{argmax}} \,\, -\frac{1}{2\sigma^2}\|\mathbf{Xw}-\mathbf{y}\|_2 -\frac{1}{\tau}\|\mathbf{w}-\mathbf{\mu}\|_1$$
+
+$$= \underset{\mu}{\mathrm{argmin}} \,\, \frac{1}{2\sigma^2}\|\mathbf{Xw}-\mathbf{y}\|_2 +\frac{1}{\tau}\|\mathbf{w}-\mathbf{\mu}\|_1$$
+
+This estimate relates to regularization in the frequentist perspective in that it contains a `regularization term';
+the difference between $\mathbf{w}_{MAP}$ and $\mathbf{w}_{MLE}$ is that the MAP estimate, which incorporates knowledge on the 
+value of $\mathbf{w}$ before the data is taken into account, has an added term ($\frac{1}{\tau}\|\mathbf{w}-\mathbf{\mu}\|_1$) that brings the estimate closer to what 
+the prior knowledge says it will be close to. This is exactly what regularization does, only that regularization (to the extent of 
+what is covered in this class) tries to keep the weights close to zero, by some measure of the norm of the weights.
+The scale factor $\tau$ relates to the corresponding regularization parameter $\lambda$ in a direct way; increasing/decreasing
+$\tau$ has the same effect on the resulting optimal weights as decreasing/increasing $\lambda$ in the frequentist regularization term; $\lambda \sim \frac{1}{\tau}$.
+
+\item 
+
+Prior expert knowledge can be incorporated into a problem by specifying a prior distribution for the weights
+and solving for the MAP rather than the MLE. If what we know is that our weight vector $\mathbf{w}$ is going
+to be close to a vector $\mathbf{v}$ then we assume a prior $\mathbf{w}\sim\mathcal{N}(\mathbf{v}, \sigma^2)$
+for some $\sigma^2$, or a prior $\mathbf{w}\sim\mathrm{Laplace}(\mathbf{v}, b)$ for some $b$. In 
+the equation to be optimized, $\sigma^2$ or $b$ will play a similar role to that of $1/\lambda$ in a frequentist
+regularization term. This makes sense in the Bayesian sense, as we are specifying knowledge of a prior distribution whose mean we define, and this makes sense 
+in the Frequentist sense, as we are penalizing weights that are far from the mean of this prior.
+
+\item
+
+We have
+
+$$\mathbf{w}_{MAP} = \underset{\mu}{\mathrm{argmin}} \,\, \frac{1}{2\sigma^2}\|\mathbf{Xw}-\mathbf{y}\|_2 +\frac{1}{\tau}\|\mathbf{w}-\mathbf{\mu}\|_1$$
+
+As $\tau$ decreases, the entries of the estimate change so that $\mathbf{w}_{MAP}$ is closer $\mu$.
+As $\tau$ approaches infinity, $\mathbf{w}_{MAP}$ approaches $\mu$.
+\item
+
 
 \end{enumerate}
 
