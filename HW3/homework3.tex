@@ -392,20 +392,70 @@ $\mathbf{w}_{MAP}$ would have a lower expected MSE, given that [TODO]
     
     \end{problem}
 
+\newpage
 \subsection*{Solution:}
 
 \begin{enumerate}
 
 \item 
-The dimension of $\mathbf{a}_1$ is $H+1$.
+The dimension of $\mathbf{a}_1$ is $H$.
 
-The dimension of $\mathbf{z}_1$ is $H+1$.
+The dimension of $\mathbf{z}_1$ is $H$.
 
 The dimension of $z_1$ is $1$.
 
 The dimension of $\hat{y}$ is $1$.
 
 \item
+
+a)
+We have 
+
+$$\hat{y} = \sigma(\mathbf{W}_2 \mathbf{z}_1 + b_2)$$
+
+and thus
+
+$$ \frac{\partial\hat{y}}{\partial b_2} = \sigma(\mathbf{W}_2 \mathbf{z}_1 + b_2)(1-\sigma(\mathbf{W}_2 z_1 + b_2)) = \hat{y}(1 - \hat{y})$$
+
+This gives us 
+
+$$L = -(y \log (\hat{y}) + (1 - y) \log (1 - \hat{y}))$$
+$$= -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$$
+
+$$\frac{\partial L}{\partial b_2} = -y \frac{\partial}{\partial b_2} \log (\hat{y}) - (1 - y) \frac{\partial}{\partial b_2}\log (1 - \hat{y})$$
+$$ = -y \frac{1}{\hat{y}} \frac{\partial \hat{y}}{\partial b_2} - (1 - y) \frac{1}{1 - \hat{y}} \frac{-\partial \hat{y}}{\partial b_2}$$
+$$ = -y \frac{1}{\hat{y}}  \hat{y}(1 - \hat{y}) + (1 - y) \frac{1}{1 - \hat{y}}  \hat{y}(1 - \hat{y})$$
+$$ = -y (1 - \hat{y}) + (1 - y)   \hat{y}$$
+$$ = -y + y\hat{y} + \hat{y} - y\hat{y}$$
+$$ \boxed{\frac{\partial L}{\partial b_2} = \hat{y}-y} $$
+
+b)
+
+
+c) We have the following
+$$L = -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$$
+$$\hat{y}=\sigma(a_2)$$
+$$a_2=\mathbf{W}_2\mathbf{z}_1+\mathbf{b}_2=\sum_h (W_2^h z_1^h + b_2^h)$$
+$$z^h_1=\sigma(a^h_1)$$
+ $$a^h_1=\mathbf{W}^h_1\mathbf{x}+b^h_1$$,
+ 
+and their partial derivatives
+$$\frac{\partial\hat{y}}{\partial b_1^h}=\frac{\partial\hat{y}}{\partial a_2}\frac{\partial a_2}{\partial z_1^h}\frac{\partial z_1^h}{\partial a_1^h} \frac{\partial a_1^h}{\partial b_1^h}$$
+$$\frac{\partial\hat{y}}{\partial a_2}=\sigma(a_2)(1-\sigma(a_2))=\hat{y}(1-\hat{y})$$
+$$\frac{\partial a_2}{\partial z_1^h} = W_2^h$$
+$$\frac{\partial z^h_1}{\partial a_1^h} = \sigma(a_1^h)(1-\sigma(a_1^h))=z_1^h(1-z_1^h)$$
+$$\frac{\partial a_1^h}{\partial b_1^h} = 1$$
+
+So, using the chain rule, we have
+
+$$\frac{\partial\hat{y}}{\partial b_1^h} = W_2^h \hat{y}(1-\hat{y}) z_1^h(1-z_1^h)$$
+
+Finally, we have $L = -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$ so
+
+$$\frac{\partial L}{\partial b_1^h} = -y \frac{\partial}{\partial b_1^h}\log (\hat{y}) - (1 - y)\frac{\partial}{\partial b_1^h} \log (1 - \hat{y})$$
+
+
+d)
 
 \end{enumerate}
 
