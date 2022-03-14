@@ -410,27 +410,40 @@ The dimension of $\hat{y}$ is $1$.
 
 a)
 We have 
-
-$$\hat{y} = \sigma(\mathbf{W}_2 \mathbf{z}_1 + b_2)$$
+$$L = -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$$
+$$\hat{y} = \sigma(a_2)$$
+$$a_2 = \mathbf{W}_2\mathbf{z}_1 + \mathbf{b}_2$$
 
 and thus
 
-$$ \frac{\partial\hat{y}}{\partial b_2} = \sigma(\mathbf{W}_2 \mathbf{z}_1 + b_2)(1-\sigma(\mathbf{W}_2 z_1 + b_2)) = \hat{y}(1 - \hat{y})$$
+$$\frac{\partial L}{\partial\hat{y}}= -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}}$$
+$$\frac{\partial\hat{y}}{\partial a_2}=\sigma(a_2)(1-\sigma(a_2))=\hat{y}(1-\hat{y})$$
+$$\frac{\partial a_2}{\partial b_2} = 1$$
 
-This gives us 
+Using the chain rule, this gives us
 
-$$L = -(y \log (\hat{y}) + (1 - y) \log (1 - \hat{y}))$$
-$$= -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$$
+$$\frac{\partial L}{\partial b_2} =\frac{\partial L}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial a_2}\frac{\partial a_2}{\partial b_2} = \frac{\partial L}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial a_2}$$
 
-$$\frac{\partial L}{\partial b_2} = -y \frac{\partial}{\partial b_2} \log (\hat{y}) - (1 - y) \frac{\partial}{\partial b_2}\log (1 - \hat{y})$$
-$$ = -y \frac{1}{\hat{y}} \frac{\partial \hat{y}}{\partial b_2} - (1 - y) \frac{1}{1 - \hat{y}} \frac{-\partial \hat{y}}{\partial b_2}$$
+$$=\left(-\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}} \right) (\hat{y}(1-\hat{y}))$$
 $$ = -y \frac{1}{\hat{y}}  \hat{y}(1 - \hat{y}) + (1 - y) \frac{1}{1 - \hat{y}}  \hat{y}(1 - \hat{y})$$
 $$ = -y (1 - \hat{y}) + (1 - y)   \hat{y}$$
 $$ = -y + y\hat{y} + \hat{y} - y\hat{y}$$
 $$ \boxed{\frac{\partial L}{\partial b_2} = \hat{y}-y} $$
 
-b)
 
+b) We introduce a new partial derivative:
+$$\frac{\partial a_2}{\partial W_2^h} = z_1^h$$
+
+Using the chain rule, then, we have 
+
+
+$$\frac{\partial L}{\partial W_2^h}= \frac{\partial L}{\partial\hat{y}} \frac{\partial\hat{y}}{\partial a_2} \frac{\partial a_2}{\partial W_2^h}$$
+
+$$\boxed{
+    \frac{\partial L}{\partial W_2^h}
+    = (\hat{y}-y)(z_1^h)
+}
+$$
 
 
 
@@ -456,15 +469,38 @@ $$\frac{\partial L}{\partial b_1^h}=\frac{\partial L}{\partial\hat{y}}\frac{\par
 
 $$\boxed{
     \frac{\partial L}{\partial b_1^h}
-    = \left(-\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}}\right) 
-    (\hat{y}(1-\hat{y}))
+    = (\hat{y}-y)
     (W_2^h)
     (z_1^h(1-z_1^h)) 
 }
 $$
 
-d)
+d) As above, we have the following partial derivatives
 
+$$\frac{\partial L}{\partial\hat{y}}= -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}}$$
+$$\frac{\partial\hat{y}}{\partial a_2}=\sigma(a_2)(1-\sigma(a_2))=\hat{y}(1-\hat{y})$$
+$$\frac{\partial a_2}{\partial z_1^h} = W_2^h$$
+$$\frac{\partial z^h_1}{\partial a_1^h} = \sigma(a_1^h)(1-\sigma(a_1^h))=z_1^h(1-z_1^h)$$
+
+and we are introducing a new one:
+
+$$\frac{\partial a_1^h}{\partial W_1^{h, m}} = x_m$$
+
+since $a_1 = \mathbf{W}_1\mathbf{x}+\mathbf{b}_1$ and the coefficient of $W_1^{h, m}$ in this equation
+is $x_m$ .
+
+Using the chain rule, then, we have
+
+$$\frac{\partial L}{\partial b_1^h}=\frac{\partial L}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial a_2}\frac{\partial a_2}{\partial z_1^h}\frac{\partial z_1^h}{\partial a_1^h} \frac{\partial a_1^h}{\partial W_1^{h, m}}$$
+
+$$\boxed{
+    \frac{\partial L}{\partial W_1^{h, m}}
+    = (\hat{y}-y)
+    (W_2^h)
+    (z_1^h(1-z_1^h)) 
+    (x_m)
+}
+$$
 \end{enumerate}
 
 
