@@ -471,53 +471,53 @@ d)
   
 \end{problem}
 
-
+\newpage
 \subsection*{Solution:}
 Plot:
 
-% \includegraphics[width=\linewidth]{final_plot}
+\includegraphics[width=\linewidth]{final_plot}
 
+\newpage
 Code:
 
 \begin{python}
-n_inputs = 'not implemented'
-n_hiddens = 'not implemented'
-n_outputs = 'not implemented'
+n_inputs = 784 # dimension of flattened image (28 * 28)
+n_hiddens = 256 # dimension of hidden layer
+n_outputs = 10 # number of label possibilities
 
-W1 = 'not implemented'
-b1 = 'not implemented'
-W2 = 'not implemented'
-b2 = 'not implemented'
-
-
+W1 = torch.nn.Parameter(0.01 * torch.randn(size=(n_inputs, n_hiddens)))
+b1 = torch.nn.Parameter(torch.zeros(size=(n_hiddens, )))
+W2 = torch.nn.Parameter(0.01 * torch.randn(size=(n_hiddens, n_outputs)))
+b2 = torch.nn.Parameter(torch.zeros(size=(n_outputs, )))
 
 def relu(x):
-    'not implemented'
-
-
+    return torch.max(torch.stack([x, torch.zeros_like(x)], dim=1), dim=1)[0]
 
 def softmax(x):
-    'not implemented'
-
-
+    return torch.div(torch.exp(X), torch.sum(torch.exp(X), 1).view(-1, 1))
 
 def net(X):
-  'not implemented'
-
-
+    X = torch.flatten(X, start_dim=1)
+    H = relu(X @ W1 + b1)
+    O = softmax(H @ W2 + b2)
+    return O
 
 def cross_entropy(y_hat, y):
-  'not implemented'
-
-
+    return -torch.log(y_hat)[range(len(y_hat)), y]
 
 def sgd(params, lr=0.1):
-  'not implemented'
-
-
+    with torch.no_grad():
+        for w in params:
+            w -= lr * w.grad
+            w.grad.zero_()
 
 def train(net, params, train_iter, loss_func=cross_entropy, updater=sgd):
-  'not implemented'
+    for _ in range(epochs):
+        for X, y in train_iter:
+            y_hat = net(X)
+            l = loss_func(y_hat, y).mean()
+            l.backward()
+            updater(params, lr)
 
 \end{python}
 
@@ -527,12 +527,15 @@ def train(net, params, train_iter, loss_func=cross_entropy, updater=sgd):
 % Name and Calibration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Name}
+Rodney Lafuente Mercado
 
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?
 
+I did not collaborate with anyone or use outside sources other than PyTorch documentation
 \subsection*{Calibration}
 Approximately how long did this homework take you to complete (in hours)? 
 
+Easily more than 15
 
 \end{document}
