@@ -432,28 +432,36 @@ $$ \boxed{\frac{\partial L}{\partial b_2} = \hat{y}-y} $$
 b)
 
 
-c) We have the following
+
+
+c) We have the following relationships between variables
+
 $$L = -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$$
 $$\hat{y}=\sigma(a_2)$$
 $$a_2=\mathbf{W}_2\mathbf{z}_1+\mathbf{b}_2=\sum_h (W_2^h z_1^h + b_2^h)$$
 $$z^h_1=\sigma(a^h_1)$$
  $$a^h_1=\mathbf{W}^h_1\mathbf{x}+b^h_1$$,
  
-and their partial derivatives
-$$\frac{\partial\hat{y}}{\partial b_1^h}=\frac{\partial\hat{y}}{\partial a_2}\frac{\partial a_2}{\partial z_1^h}\frac{\partial z_1^h}{\partial a_1^h} \frac{\partial a_1^h}{\partial b_1^h}$$
+thus we have the following partial derivatives
+
+$$\frac{\partial L}{\partial\hat{y}}= -\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}}$$
 $$\frac{\partial\hat{y}}{\partial a_2}=\sigma(a_2)(1-\sigma(a_2))=\hat{y}(1-\hat{y})$$
 $$\frac{\partial a_2}{\partial z_1^h} = W_2^h$$
 $$\frac{\partial z^h_1}{\partial a_1^h} = \sigma(a_1^h)(1-\sigma(a_1^h))=z_1^h(1-z_1^h)$$
 $$\frac{\partial a_1^h}{\partial b_1^h} = 1$$
 
-So, using the chain rule, we have
+Using the chain rule, then, we have
 
-$$\frac{\partial\hat{y}}{\partial b_1^h} = W_2^h \hat{y}(1-\hat{y}) z_1^h(1-z_1^h)$$
+$$\frac{\partial L}{\partial b_1^h}=\frac{\partial L}{\partial\hat{y}}\frac{\partial\hat{y}}{\partial a_2}\frac{\partial a_2}{\partial z_1^h}\frac{\partial z_1^h}{\partial a_1^h} \frac{\partial a_1^h}{\partial b_1^h}$$
 
-Finally, we have $L = -y \log (\hat{y}) - (1 - y) \log (1 - \hat{y})$ so
-
-$$\frac{\partial L}{\partial b_1^h} = -y \frac{\partial}{\partial b_1^h}\log (\hat{y}) - (1 - y)\frac{\partial}{\partial b_1^h} \log (1 - \hat{y})$$
-
+$$\boxed{
+    \frac{\partial L}{\partial b_1^h}
+    = \left(-\frac{y}{\hat{y}} + \frac{1-y}{1-\hat{y}}\right) 
+    (\hat{y}(1-\hat{y}))
+    (W_2^h)
+    (z_1^h(1-z_1^h)) 
+}
+$$
 
 d)
 
