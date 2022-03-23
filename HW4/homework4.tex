@@ -113,8 +113,49 @@ the questions below when composing your answers, and to justify each step.
 
 \end{problem}
 
+\newpage
 \subsection*{Solution}
+\begin{enumerate}
 
+\item
+The following is a plot of the training data and the optimal decision boundary.
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{Cs181hw4.jpg}
+\end{figure}
+
+\item 
+The value of the margin achieved is 1.
+
+\item 
+A unit vector orthogonal to the decision boundary is $(0, 1)$.
+
+\item 
+The set of all possible $(\mathbf{w}, w_0)$ that define the optimal decision boundary
+are all those such that, given $\mathbf{w}=(w_1, w_2)$, satisfy $w_1 = 0$ and $w_2=w_0$.
+
+\item 
+The solution $\mathbf{w} = (0, 1)$ is optimal for the optimization problem.
+
+\item
+$w_0 = 1$. Substituting these optimal values into our discriminant function gives
+$$h(\bphi(x))= \bphi_2(x) + 1$$
+
+\item 
+The points $(-2,+1),(-1,-1),(0,+1),(1,-1),(2,+1)$ could be support vectors of the classifier. For each of these
+points, plugging the features into the discriminant function gives the exact corresponding
+$y$ value for those features (e.g., the point $\{x_i, y_i\} = (-2, +1)$ has $\bphi(x_i)=(-2, 0)$, and 
+$h(\bphi(x_i))= 0 + 1 = +1$, which is $y_i$).
+
+\item
+This feature mapping still admits a separable solution. The margin for this feature mapping is half as 
+big as the margin in the previous parts. Based on this, I would prefer the previous set of features,
+as the larger margin of 1 allows there to be support vectors with discriminant values 
+of exactly either -1 or +1.
+
+
+\end{enumerate}
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem 2
@@ -254,6 +295,7 @@ Draw a causal chain that resulted in this outcome and circle the choice points t
 % Name and Calibration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Name}
+Rodney Lafuente Mercado
 
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?\\
