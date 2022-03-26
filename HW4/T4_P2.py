@@ -1,11 +1,9 @@
 # CS 181, Spring 2022
 # Homework 4
 
-from cgitb import small
 import numpy as np
 import matplotlib.pyplot as plt
-from torch import bitwise_and
-import matplotlib.pyplot as plt
+from scipy.spatial.distance import cdist
 
 # Loading datasets for K-Means and HAC
 small_dataset = np.load("data/small_dataset.npy")
@@ -62,36 +60,77 @@ class KMeans(object):
     def get_mean_images(self):
         return self.centers
 
-# KMeansClassifier = KMeans(K=3)
+
+class HAC(object):
+    def __init__(self, linkage):
+        self.linkage = linkage
+
+    def __min_linkage(self, C1, C2):
+        return np.min(cdist(C1, C2))
+
+    def __max_linkage(self, C1, C2):
+        return np.max(cdist(C1, C2))
+
+    def __centroid_linkage(self, C1, C2):
+        return np.linalg.norm(np.average(C2, axis=0) - np.average(C1, axis=0))
+
+    # For simplicity and speed, I only merge clusters until there are n_clusters remaining.
+    # This removes the need to store the whole dendrogram (e.g. the cluster assignments after
+    # every step). I have altered get_mean_images to no longer require n_clusters for this same
+    # reason. This approach is supported by https://edstem.org/us/courses/19561/discussion/1316266
+    def fit(self, X, n_clusters):
+        linkage = None
+        if self.linkage == 'min':
+            linkage = self.__min_linkage
+        elif self.linkage == 'max':
+            linkage = self.__max_linkage
+        else:
+            linkage = self.__centroid_linkage
+        
+        # Initialize clusters, which are lists of lists of numpy arrays
+        self.clusters = [[x] for x in X]
+        num_clusters = len(self.clusters)
+
+        while num_clusters > n_clusters:
+            # Keep track of indexes to merge, distance between them
+            idx_1 = -1
+            idx_2 = -1
+            min_dist = np.inf
+
+            # Calculate distances
+            for i in range(len(self.clusters)):
+                for j in range(len(self.clusters)):
+                    if i != j:
+                        dist = linkage(self.clusters[i], self.clusters[j])
+                        if dist < min_dist:
+                            min_dist = dist
+                            idx_1 = i
+                            idx_2 = j
+            
+            # Merge clusters
+            self.clusters[idx_1] += self.clusters[idx_2]
+            del self.clusters[idx_2]
+
+            num_clusters = len(self.clusters)
+
+    # Returns the mean image when using n_clusters clusters
+    def get_mean_images(self):
+        return np.array([np.mean(np.array(cluster), 0) for cluster in self.clusters])
+
+
 # test_X = np.array([[-3,-3],
 #                    [-1,-3],
 #                    [ 3, 0],
 #                    [-2,-1],
 #                    [ 0, 0],
 #                    [-1,-2]])
-# KMeansClassifier.fit(test_X)
-
-# fig, ax = plt.subplots()
-# t = [np.argmax(vec) for vec in KMeansClassifier.resp_mat]
-# ax.scatter(*test_X.T, c=t)
-# ax.scatter(*KMeansClassifier.centers.T, marker='X')
-# plt.savefig('kmeans.png')
-
-
-class HAC(object):
-    def __init__(self, linkage):
-        self.linkage = linkage
-    
-    def fit(self, X):
-        pass
-
-    # Returns the mean image when using n_clusters clusters
-    def get_mean_images(self, n_clusters):
-        # TODO: Change this!
-        return small_dataset[:n_clusters]
+# l = 'max'
+# hac = HAC(l)
+# hac.fit(test_X, 3)
+# print(hac.get_mean_images())
 
 # Plotting code for parts 2 and 3
-def make_mean_image_plot(data, standardized=False):
+def make_mean_image_plot(data, standardized=False, title=''):
     # Number of random restarts
     niters = 3
     K = 10
@@ -112,38 +151,37 @@ def make_mean_image_plot(data, standardized=False):
             if k == 0: plt.title('Iter '+str(i))
             if i == 0: ax.set_ylabel('Class '+str(k), rotation=90)
             plt.imshow(allmeans[k,i].reshape(28,28), cmap='Greys_r')
-    plt.show()
+    plt.savefig(title+'plot.png')
 
 # ~~ Part 2 ~~
-make_mean_image_plot(large_dataset, False)
+# make_mean_image_plot(large_dataset, False, title='part2')
 
 # ~~ Part 3 ~~
-# TODO: Change this line! standardize large_dataset and store the result in large_dataset_standardized
-large_dataset_standardized = large_dataset
-# make_mean_image_plot(large_dataset_standardized, True)
+# large_dataset_standardized = (large_dataset - np.mean(large_dataset)) / np.std(large_dataset)
+# make_mean_image_plot(large_dataset_standardized, True, title='part3')
 
 # Plotting code for part 4
-# LINKAGES = [ 'max', 'min', 'centroid' ]
-# n_clusters = 10
+LINKAGES = [ 'max', 'min', 'centroid' ]
+n_clusters = 10
 
-# fig = plt.figure(figsize=(10,10))
-# plt.suptitle("HAC mean images with max, min, and centroid linkages")
-# for l_idx, l in enumerate(LINKAGES):
-#     # Fit HAC
-#     hac = HAC(l)
-#     hac.fit(small_dataset)
-#     mean_images = hac.get_mean_images(n_clusters)
-#     # Make plot
-#     for m_idx in range(mean_images.shape[0]):
-#         m = mean_images[m_idx]
-#         ax = fig.add_subplot(n_clusters, len(LINKAGES), l_idx + m_idx*len(LINKAGES) + 1)
-#         plt.setp(ax.get_xticklabels(), visible=False)
-#         plt.setp(ax.get_yticklabels(), visible=False)
-#         ax.tick_params(axis='both', which='both', length=0)
-#         if m_idx == 0: plt.title(l)
-#         if l_idx == 0: ax.set_ylabel('Class '+str(m_idx), rotation=90)
-#         plt.imshow(m.reshape(28,28), cmap='Greys_r')
-# plt.show()
+fig = plt.figure(figsize=(10,10))
+plt.suptitle("HAC mean images with max, min, and centroid linkages")
+for l_idx, l in enumerate(LINKAGES):
+    # Fit HAC
+    hac = HAC(l)
+    hac.fit(small_dataset, n_clusters)
+    mean_images = hac.get_mean_images()
+    # Make plot
+    for m_idx in range(mean_images.shape[0]):
+        m = mean_images[m_idx]
+        ax = fig.add_subplot(n_clusters, len(LINKAGES), l_idx + m_idx*len(LINKAGES) + 1)
+        plt.setp(ax.get_xticklabels(), visible=False)
+        plt.setp(ax.get_yticklabels(), visible=False)
+        ax.tick_params(axis='both', which='both', length=0)
+        if m_idx == 0: plt.title(l)
+        if l_idx == 0: ax.set_ylabel('Class '+str(m_idx), rotation=90)
+        plt.imshow(m.reshape(28,28), cmap='Greys_r')
+plt.savefig('part4plot.png')
 
 # TODO: Write plotting code for part 5
 
