@@ -16,7 +16,7 @@ class KMeans(object):
         self.K = K
 
     # X is a (N x 28 x 28) array where 28x28 is the dimensions of each of the N images.
-    def fit(self, X):
+    def fit(self, X, plot_rss=False):
         # Randomly select cluster centers
         center_idxs = np.random.choice(len(X), self.K, replace=False)
         self.centers = X[center_idxs]
@@ -49,12 +49,13 @@ class KMeans(object):
             self.centers = np.array([s / n for s, n in zip(clust_sums, clust_sizes)])   
 
             # Calculate residual sum of squares 
-            loss = 0
-            for i in range(len(X)):
-                for k in range(self.K):
-                    if resp_mat[i][k]:
-                        loss += np.linalg.norm(X[i] - self.centers[k])
-            losses.append(loss)
+            if plot_rss:
+                loss = 0
+                for i in range(len(X)):
+                    for k in range(self.K):
+                        if resp_mat[i][k]:
+                            loss += np.linalg.norm(X[i] - self.centers[k])
+                losses.append(loss)
 
             # Check for convergence
             if np.array_equal(last_resp_mat, resp_mat):
@@ -64,11 +65,13 @@ class KMeans(object):
             last_resp_mat = resp_mat
 
         self.resp_mat = resp_mat
-        _, ax = plt.subplots()
-        ax.plot(range(len(losses)), losses)
-        ax.set_ylabel("RSS")
-        ax.set_xlabel("Iterations")
-        plt.savefig("part1plot.png")
+
+        if plot_rss:
+            _, ax = plt.subplots()
+            ax.plot(range(len(losses)), losses)
+            ax.set_ylabel("RSS")
+            ax.set_xlabel("Iterations")
+            plt.savefig("part1plot.png")
 
     # This should return the arrays for K images. Each image should represent the mean of each of the fitted clusters.
     def get_mean_images(self):
@@ -130,18 +133,6 @@ class HAC(object):
     def get_mean_images(self):
         return np.array([np.mean(np.array(cluster), 0) for cluster in self.clusters])
 
-
-# test_X = np.array([[-3,-3],
-#                    [-1,-3],
-#                    [ 3, 0],
-#                    [-2,-1],
-#                    [ 0, 0],
-#                    [-1,-2]])
-# l = 'max'
-# hac = HAC(l)
-# hac.fit(test_X, 3)
-# print(hac.get_mean_images())
-
 # Plotting code for parts 2 and 3
 def make_mean_image_plot(data, standardized=False, title=''):
     # Number of random restarts
@@ -168,8 +159,8 @@ def make_mean_image_plot(data, standardized=False, title=''):
 
 
 # ~~ Part 1 ~~
-KMeansClassifier = KMeans(10)
-KMeansClassifier.fit(large_dataset)
+# KMeansClassifier = KMeans(10)
+# KMeansClassifier.fit(large_dataset, plot_rss=True)
 
 # ~~ Part 2 ~~
 # make_mean_image_plot(large_dataset, False, title='part2')
@@ -201,12 +192,46 @@ KMeansClassifier.fit(large_dataset)
 #         plt.imshow(m.reshape(28,28), cmap='Greys_r')
 # plt.savefig('part4plot.png')
 
-# TODO: Write plotting code for part 5
+# ~~ Part 5 ~~
 # fig, ax = plt.subplots()
-# ax.set_xlabel('Cluster')
+# ax.set_title('KMeans')
+# ax.set_xlabel('Cluster index')
 # ax.set_ylabel('Number of images in cluster')
-# plt.show()
+# KMeansClassifier = KMeans(10)
+# KMeansClassifier.fit(small_dataset)
+# ax.plot(np.sum(KMeansClassifier.resp_mat, axis=0), 'o')
+# plt.savefig('part5kmeansplot.png')
 
+# fig, ax = plt.subplots()
+# ax.set_title('HAC, min linkage')
+# ax.set_xlabel('Cluster index')
+# ax.set_ylabel('Number of images in cluster')
+# hac = HAC('min')
+# hac.fit(small_dataset, 10)
+# clust_sizes = [len(clust) for clust in hac.clusters]
+# ax.plot(clust_sizes, 'o')
+# plt.savefig('part5hacmin.png')
 
+# fig, ax = plt.subplots()
+# ax.set_title('HAC, max linkage')
+# ax.set_xlabel('Cluster index')
+# ax.set_ylabel('Number of images in cluster')
+# hac = HAC('max')
+# hac.fit(small_dataset, 10)
+# clust_sizes = [len(clust) for clust in hac.clusters]
+# ax.plot(clust_sizes, 'o')
+# plt.savefig('part5hacmax.png')
 
-# TODO: Write plotting code for part 6
+# fig, ax = plt.subplots()
+# ax.set_title('HAC, centroid linkage')
+# ax.set_xlabel('Cluster index')
+# ax.set_ylabel('Number of images in cluster')
+# hac = HAC('centroid')
+# hac.fit(small_dataset, 10)
+# clust_sizes = [len(clust) for clust in hac.clusters]
+# ax.plot(clust_sizes, 'o')
+# plt.savefig('part5haccentroid.png')
+
+# ~~ Part 6 ~~
+from seaborn import heatmap
+
