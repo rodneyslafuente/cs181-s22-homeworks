@@ -24,6 +24,7 @@ class KMeans(object):
         # Keep track of previous responsibility vector
         last_resp_mat = None
 
+        losses = []
         while True:
             # Initialize responsibility vector
             resp_mat = np.zeros((X.shape[0], self.K))
@@ -47,19 +48,31 @@ class KMeans(object):
                 clust_sizes[np.argmax(resp_vec)] += 1
             self.centers = np.array([s / n for s, n in zip(clust_sums, clust_sizes)])   
 
+            # Calculate residual sum of squares 
+            loss = 0
+            for i in range(len(X)):
+                for k in range(self.K):
+                    if resp_mat[i][k]:
+                        loss += np.linalg.norm(X[i] - self.centers[k])
+            losses.append(loss)
+
             # Check for convergence
             if np.array_equal(last_resp_mat, resp_mat):
                 break
 
-            # Update last responsibility vector for comparison
+            # Update last responsibility vector
             last_resp_mat = resp_mat
 
         self.resp_mat = resp_mat
+        _, ax = plt.subplots()
+        ax.plot(range(len(losses)), losses)
+        ax.set_ylabel("RSS")
+        ax.set_xlabel("Iterations")
+        plt.savefig("part1plot.png")
 
     # This should return the arrays for K images. Each image should represent the mean of each of the fitted clusters.
     def get_mean_images(self):
         return self.centers
-
 
 class HAC(object):
     def __init__(self, linkage):
@@ -153,6 +166,11 @@ def make_mean_image_plot(data, standardized=False, title=''):
             plt.imshow(allmeans[k,i].reshape(28,28), cmap='Greys_r')
     plt.savefig(title+'plot.png')
 
+
+# ~~ Part 1 ~~
+KMeansClassifier = KMeans(10)
+KMeansClassifier.fit(large_dataset)
+
 # ~~ Part 2 ~~
 # make_mean_image_plot(large_dataset, False, title='part2')
 
@@ -161,28 +179,34 @@ def make_mean_image_plot(data, standardized=False, title=''):
 # make_mean_image_plot(large_dataset_standardized, True, title='part3')
 
 # Plotting code for part 4
-LINKAGES = [ 'max', 'min', 'centroid' ]
-n_clusters = 10
+# LINKAGES = [ 'max', 'min', 'centroid' ]
+# n_clusters = 10
 
-fig = plt.figure(figsize=(10,10))
-plt.suptitle("HAC mean images with max, min, and centroid linkages")
-for l_idx, l in enumerate(LINKAGES):
-    # Fit HAC
-    hac = HAC(l)
-    hac.fit(small_dataset, n_clusters)
-    mean_images = hac.get_mean_images()
-    # Make plot
-    for m_idx in range(mean_images.shape[0]):
-        m = mean_images[m_idx]
-        ax = fig.add_subplot(n_clusters, len(LINKAGES), l_idx + m_idx*len(LINKAGES) + 1)
-        plt.setp(ax.get_xticklabels(), visible=False)
-        plt.setp(ax.get_yticklabels(), visible=False)
-        ax.tick_params(axis='both', which='both', length=0)
-        if m_idx == 0: plt.title(l)
-        if l_idx == 0: ax.set_ylabel('Class '+str(m_idx), rotation=90)
-        plt.imshow(m.reshape(28,28), cmap='Greys_r')
-plt.savefig('part4plot.png')
+# fig = plt.figure(figsize=(10,10))
+# plt.suptitle("HAC mean images with max, min, and centroid linkages")
+# for l_idx, l in enumerate(LINKAGES):
+#     # Fit HAC
+#     hac = HAC(l)
+#     hac.fit(small_dataset, n_clusters)
+#     mean_images = hac.get_mean_images()
+#     # Make plot
+#     for m_idx in range(mean_images.shape[0]):
+#         m = mean_images[m_idx]
+#         ax = fig.add_subplot(n_clusters, len(LINKAGES), l_idx + m_idx*len(LINKAGES) + 1)
+#         plt.setp(ax.get_xticklabels(), visible=False)
+#         plt.setp(ax.get_yticklabels(), visible=False)
+#         ax.tick_params(axis='both', which='both', length=0)
+#         if m_idx == 0: plt.title(l)
+#         if l_idx == 0: ax.set_ylabel('Class '+str(m_idx), rotation=90)
+#         plt.imshow(m.reshape(28,28), cmap='Greys_r')
+# plt.savefig('part4plot.png')
 
 # TODO: Write plotting code for part 5
+# fig, ax = plt.subplots()
+# ax.set_xlabel('Cluster')
+# ax.set_ylabel('Number of images in cluster')
+# plt.show()
+
+
 
 # TODO: Write plotting code for part 6
