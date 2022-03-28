@@ -248,8 +248,123 @@ The code in \texttt{T4\_P2.py} loads the images into your environment into two a
 \end{enumerate}
 \end{framed}
 
-
+\newpage
 \subsection*{Solution}
+\begin{enumerate}
+
+\item The following is the plot for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part1plot}
+\end{figure}
+
+\newpage
+\item The following is the plot for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part2plot}
+\end{figure}
+
+\newpage
+\item The following is the plot for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part3plot}
+\end{figure}
+
+Compared to Part 2, the centroids differ in that they are assigned to different 
+underlying numbers. In terms of blurriness, crispness, etc., there is not a 
+noticeable difference.
+
+\newpage
+\item The following is the plot for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part4plot}
+\end{figure}
+
+The means determined using min and centroid linkage HAC are significantly more crisp than
+those determined using KMeans. The means in max linkage HAC are similar in crispness to 
+those from KMeans. HAC was only ran once as it has the same outcome every time for 
+a given data set (there is no randomness as in the picking of cluster centers in KMeans).
+
+\newpage
+\item The following are the plots for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part5haccentroid}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part5hacmax}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part5hacmin}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part5kmeansplot}
+\end{figure}
+
+These plots show that the clusters produced by the max linkage criteria are on more
+similar in size to each other, where those produced by the min linkage criteria 
+are very different in size (one is much larger than the others). This explains the
+crispness of the clusters as a small cluster is going to be more crisp due to it 
+being the average of less images (introducing less blur into the image).
+
+\newpage
+\item The following are the plots for this problem 
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6kmeanscentroid}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6kmeansmax}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6kmeansmin}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6maxcentroid}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6mincentroid}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{part6minmax}
+\end{figure}
+
+Max-linkage HAC is closest to k-means. This is because max linkage HAC and k-means
+both produce clusters that are large--they are both motivated to create clusters 
+that are big.
+
+\item 
+
+The main challenge with this approach is 
+that the resulting clusters
+don't line up exactly in 0-9 order such that 
+the transition matrix would be correctly aligned.
+Assuming this is corrected by hand,
+I still don't think that this would 
+be a reasonable evaluation.
+This is because we aren't asking these methods
+to correctly classify digits;
+we are only asking them cluster together those
+the methods think are similar to each other.
+Therefore, it would be incorrect to 
+negatively evaluate a method that classifies
+fives as threes if they happen to be more similar
+to threes than they are to other fives.
+
+\end{enumerate}
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
