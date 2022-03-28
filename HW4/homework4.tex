@@ -403,7 +403,48 @@ Draw a causal chain that resulted in this outcome and circle the choice points t
 
 \end{problem}
 
+\newpage
 \subsection*{Solution}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{Casualchain}
+\end{center}
+\end{figure}
+
+I did this exercise based on \url{http://www.survivalofthebestfit.com/game}: a game that 
+exemplifies algorithmic bias in resume screening.
+
+In this picture, the two circled points demonstrate two ways 
+in which data is gathered for inputting into a machine learning model 
+
+
+At the first circled point, two alternate decisions would be to,
+
+1. Make decisions about who should be hired, and then have a different
+person analyze those decisions and explicitly point out those that may 
+be regarded as containing bias. Create two models, one that classifies
+people to be hired and those not to be hired, and one that 
+classifies people into those that may have been picked with underlying
+bias and those that were picked without underlying bias. The
+resulting classifications could be used in further steps.
+
+2. Not make decisions based off of gut-intuition to begin with, and rather
+train models to determine subjective features such as 
+how ambitious a person is on a scale of 1 to 10, and how hard working
+a person is on a scale of 1 to 10. Feed data from people into a non-ML algorithm
+that simply picks the best N people based on this criteria
+
+In the second circled point, alternative decisions would be to:
+
+1. Not go off of existing data and use only data of hiring decisions made 
+within the organization, by people who were trained not to express
+subconscious bias
+
+2. Train a model, based off of humans picking apart people who were fairly and 
+unfairly hired, to determine when a person from the data set was fairly or unfairly
+hired. Use this model to remove data points where such people were unfairly hired/not hired,
+and use this new model. Or, correct data points instead of removing them altogether.
+
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -417,7 +458,11 @@ Whom did you work with, and did you use any resources beyond cs181-textbook and 
 \\
 Did you attend office hours for help with this homework?
 
+I did not work with anyone on this problem set
+
 \subsection*{Calibration}
 Approximately how long did this homework take you to complete (in hours)? 
+
+more than 15
 
 \end{document}
