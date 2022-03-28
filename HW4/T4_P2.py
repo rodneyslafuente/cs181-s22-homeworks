@@ -278,10 +278,10 @@ m2 = np.load('m2.npy') # min
 m3 = np.load('m3.npy') # max
 m4 = np.load('m4.npy') # centroid
 
-data = generate_mat(m1, m2)
+data = generate_mat(m3, m4)
 
 fig, ax = plt.subplots()
 ax = heatmap(data)
-ax.set_ylabel('KMeans')
-ax.set_xlabel('HAC, min linkage')
-plt.savefig('part6kmeansmin.png')
+ax.set_ylabel('HAC, max linkage')
+ax.set_xlabel('HAC, centroid linkage')
+plt.savefig('part6maxcentroid.png')
