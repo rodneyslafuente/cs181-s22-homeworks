@@ -1,6 +1,7 @@
 # CS 181, Spring 2022
 # Homework 4
 
+from cgitb import small
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
@@ -199,6 +200,7 @@ def make_mean_image_plot(data, standardized=False, title=''):
 # ax.set_ylabel('Number of images in cluster')
 # KMeansClassifier = KMeans(10)
 # KMeansClassifier.fit(small_dataset)
+# clust_sizes = np.sum(KMeansClassifier.resp_mat, axis=0)
 # ax.plot(np.sum(KMeansClassifier.resp_mat, axis=0), 'o')
 # plt.savefig('part5kmeansplot.png')
 
@@ -235,3 +237,51 @@ def make_mean_image_plot(data, standardized=False, title=''):
 # ~~ Part 6 ~~
 from seaborn import heatmap
 
+# uniform_data = np.random.rand(10, 12)
+
+# print('kmeans')
+# KMeansClassifier = KMeans(10)
+# KMeansClassifier.fit(small_dataset)
+# np.save('m1', KMeansClassifier.resp_mat)
+
+
+# hac = HAC('centroid')
+# hac.fit(small_dataset, 10)
+# np.save('c3', hac.clusters, allow_pickle=True)
+
+# def get_index(arr, elt):
+#     i = 0
+#     while not np.array_equal(arr[i], elt):
+#         i += 1
+#     return i
+
+# resp_mat = np.zeros((len(small_dataset), 10))
+# clusters = np.load('c3.npy', allow_pickle=True)
+# for k in range(len(clusters)):
+#     for x in clusters[k]:
+#         idx = get_index(small_dataset, x)
+#         resp_mat[idx][k] = 1
+
+# np.save('m4', resp_mat)
+# print(resp_mat)
+# print(np.sum(resp_mat, axis=0))
+
+def generate_mat(m1, m2):
+    mat = np.zeros((10, 10))
+    for i in range(len(m1)):
+        for j in range(len(m2)):
+            mat[np.argmax(m1[i])][np.argmax(m2[j])] += 1
+    return mat
+
+m1 = np.load('m1.npy') # kmeans
+m2 = np.load('m2.npy') # min
+m3 = np.load('m3.npy') # max
+m4 = np.load('m4.npy') # centroid
+
+data = generate_mat(m1, m2)
+
+fig, ax = plt.subplots()
+ax = heatmap(data)
+ax.set_ylabel('KMeans')
+ax.set_xlabel('HAC, min linkage')
+plt.savefig('part6kmeansmin.png')
