@@ -22,7 +22,7 @@
 \usepackage{enumitem}
 \usepackage{tikz}
 \usetikzlibrary{positioning,shapes,arrows}
-\usepackage{xifthen}
+% \usepackage{xifthen}
 \usepackage{pythonhighlight}
 \usepackage{soul}
 
@@ -135,23 +135,76 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
 
 \item[6.] Finally, implement your solution in \texttt{p1.ipynb} and attach the final plot below.
 
-{\bfseries You will recieve no points for code not included below.}
+{\bfseries You will receive no points for code not included below.}
 \end{enumerate}
   
 \end{framed}
 
-\newpage
+% \newpage
 \subsection*{Solution}
 
 \begin{enumerate}
   \item
+  The log-likelihood we are trying to maximize is
+  $$\log p(\{x_n\}^N_{n=1}; \btheta, \{\beta_k\}^K_{k = 1})$$
+  $$=\sum_n\log p(x_n;\btheta \{\beta_k\}^K_{k = 1})$$
+  marginalizing out our latent $\mathbf{z}_n$'s we have
+  $$=\sum_n\log \left[ \sum_k p(x_n,z_{n,k};\btheta,\beta_k) \right]$$
+ we can simplify no further as consolidating a summation inside of a logarithm is not possible; optimizing this likelihood directly is intractable.
+  
   \item 
+  The complete negative data log likelihood is 
+  $$\mcL(\btheta,\{\beta_k\}^K_{k=1})$$
+  $$=-\log p(D; \btheta,\{\beta_k\}^K_{k=1})$$
+  $$=-\log p(\{(x_n, \mathbf{z}_n)\}^K_{k=1};\btheta,\{\beta_k\}^K_{k=1})$$
+  $$=-\sum_n \log p(x_n, \mathbf{z}_n; \btheta, \{\beta_k\}^K_{k=1})$$
+  $$=-\sum_n \log\left[p(x_n;\mathbf{z}_n, \{\beta_k\}^K_{k=1})p(\mathbf{z}_n;\btheta)\right]$$
+  $$=-\sum_n \log p(x_n;\mathbf{z}_n, \{\beta_k\}^K_{k=1}) +\log p(\mathbf{z}_n;\btheta)$$
+  using the power trick this turns into
+  
+  $$=-\sum_n \log\left[\prod_k\left(\frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\right)^{z_{n,k}}\right]+\log\left[\prod_k \theta_k^{z_{n,k}}\right]$$
+  $$\boxed{\mcL(\btheta,\{\beta_k\}^K_{k=1})=-\sum_n \sum_k z_{n,k}\log\left(\frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\right)+z_{n,k}\log\theta_k}$$
+
+
   \item 
+  Each of our $q_{n,k}$ is
+  $$q_{n,k}=p(\mathbf{z}_n=C_k|x_n,\btheta,\{\beta_k\}^K_{k=1})$$
+  by Bayes' rule we have
+  $$q_{n,k}\propto p(x_n|\mathbf{z}_n=C_k,\{\beta_k\}^K_{k=1})p(\mathbf{z}_n=C_k;\btheta)$$
+  $$= \frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\theta_k$$
+  treating the values that remain constant for differing $C_k$'s as constant yields the following
+  $$\boxed{q_{n,k}\propto\beta_k^\alpha e^{-\beta x}\theta_k}$$
+  and to get the entire vector $\mathbf{q}_n$, we must normalize these values such that they sum to one.
+  
   \item 
     \begin{enumerate}
       \item 
+      What we want to find is the following:
+      $$\mathrm{E}_{\mathbf{z}_n|x_n}\left[\mcL(\btheta,\{\beta_k\}^K_{k=1})\right]$$
+      
+      we have that this is equal to
+      $$=\mathrm{E}_{\mathbf{z}_n|x_n}\left[-\sum_n\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
+      $$=-\sum_n\mathrm{E}_{\mathbf{z}_n|x_n}\left[\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
+      $$=-\sum_n\sum_k p(\mathbf{z}_n=C_k|x_n)\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
+      $$=-\sum_n\sum_k q_{n,k}\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
+      
+      
       \item 
-      \item 
+      We wish to solve for the following
+      
+      $$\underset{\theta}{\mathrm{argmin}}\;\mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1})\quad\text{s.t.}\quad\sum_k\theta_k -1 = 0$$
+      
+      we can do so using a Lagrange multiplier:
+      
+      $$\text{L}(\btheta, \lambda) = \mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1}) + \lambda\left(\sum_k\theta_k-1\right)$$
+      $$= - $$
+      
+      now we take the gradient with respect to $\theta_k$:
+      
+      and set it equal to zero:
+      
+      this value makes intuitive sense because...
+      \item
     \end{enumerate}
   \item 
   \item 
@@ -389,10 +442,10 @@ questions and show your work (i.e., state what the blocking path(s) is/are and w
 % Name and Calibration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Name}
-
+Rodney Lafuente
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?
-
+I did not work with anyone on this problem set.
 \subsection*{Calibration}
 Approximately how long did this homework take you to complete (in hours)? 
 
