@@ -163,7 +163,7 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
   using the power trick this turns into
   
   $$=-\sum_n \log\left[\prod_k\mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}\right]+\log\left[\prod_k \theta_k^{z_{n,k}}\right]$$
-  $$\boxed{\mcL(\btheta,\{\beta_k\}^K_{k=1})=-\sum_n \sum_k z_{n,k}\log\mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}+z_{n,k}\log\theta_k}$$
+  $$\boxed{\mcL(\btheta,\{\beta_k\}^K_{k=1})=-\sum_n \sum_k z_{n,k}\log\mathrm{Gamma}(x_n;\alpha,\beta_k)+z_{n,k}\log\theta_k}$$
 
 
   \item 
@@ -263,30 +263,37 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
   \item 
     Plot:
 
-    % \includegraphics[width=\linewidth]{p1}
+    \includegraphics[width=\linewidth]{p1}
 
     Code:
 
     \begin{python}
 def e_step(theta, betas):
-    q = 'not implemented'
-    return q
+    scales = 1 / betas
+    x_given_z = gamma(alpha, scale=scales)
+    q = np.multiply(x_given_z.pdf(x), theta) 
+    s = np.sum(q, axis=1)
+    q_normalized = np.array([q[i] / s[i] for i in range(len(q))])
+    return q_normalized
 
 
 def m_step(q):
-    theta_hat = 'not implemented'
-    beta_hats = 'not implemented'
+    theta_hat = np.sum(q, 0) / q.shape[0]
+    beta_hats = alpha * np.sum(q, 0) / (x.T @ q)
     return theta_hat, beta_hats
 
 
 def log_px(x, theta, betas):
-    p = 'not implemented'
-    return p
+    scales = 1 / betas
+    x_given_z = gamma(alpha, scale=scales)
+    log_px = np.log(np.sum(np.exp(x_given_z.logpdf(x) + np.log(theta)), axis=1))
+    return log_px
 
 
 def run_em(theta, betas, iterations=1000):
-    theta = 'not implemented'
-    betas = 'not implemented'
+    for _ in range(iterations):
+        q = e_step(theta, betas)
+        theta, betas = m_step(q)
     return theta, betas
     \end{python}
 \end{enumerate}
