@@ -162,8 +162,8 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
   $$=-\sum_n \log p(x_n;\mathbf{z}_n, \{\beta_k\}^K_{k=1}) +\log p(\mathbf{z}_n;\btheta)$$
   using the power trick this turns into
   
-  $$=-\sum_n \log\left[\prod_k\left(\frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\right)^{z_{n,k}}\right]+\log\left[\prod_k \theta_k^{z_{n,k}}\right]$$
-  $$\boxed{\mcL(\btheta,\{\beta_k\}^K_{k=1})=-\sum_n \sum_k z_{n,k}\log\left(\frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\right)+z_{n,k}\log\theta_k}$$
+  $$=-\sum_n \log\left[\prod_k\mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}\right]+\log\left[\prod_k \theta_k^{z_{n,k}}\right]$$
+  $$\boxed{\mcL(\btheta,\{\beta_k\}^K_{k=1})=-\sum_n \sum_k z_{n,k}\log\mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}+z_{n,k}\log\theta_k}$$
 
 
   \item 
@@ -171,23 +171,22 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
   $$q_{n,k}=p(\mathbf{z}_n=C_k|x_n,\btheta,\{\beta_k\}^K_{k=1})$$
   by Bayes' rule we have
   $$q_{n,k}\propto p(x_n|\mathbf{z}_n=C_k,\{\beta_k\}^K_{k=1})p(\mathbf{z}_n=C_k;\btheta)$$
-  $$= \frac{\beta_k^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\beta x}\theta_k$$
-  treating the values that remain constant for differing $C_k$'s as constant yields the following
-  $$\boxed{q_{n,k}\propto\beta_k^\alpha e^{-\beta x}\theta_k}$$
-  and to get the entire vector $\mathbf{q}_n$, we must normalize these values such that they sum to one.
+  $$= \mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}\theta_k$$
+  and to get the entire vector $\mathbf{q}_n$, we must \textbf{normalize these values} such that they sum to one, i.e.
+  $$\boxed{q_{n,k}=\frac{\mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}\theta_k}{\sum_k \mathrm{Gamma}(x_n;\alpha,\beta_k)^{z_{n,k}}\theta_k}}$$
   
   \item 
     \begin{enumerate}
       \item 
       What we want to find is the following:
-      $$\mathrm{E}_{\mathbf{z}_n|x_n}\left[\mcL(\btheta,\{\beta_k\}^K_{k=1})\right]$$
+      $$\mathrm{E}_{\mathbf{z}_n|x_n}\left[-\mcL(\btheta,\{\beta_k\}^K_{k=1})\right]$$
       
       we have that this is equal to
-      $$=\mathrm{E}_{\mathbf{z}_n|x_n}\left[-\sum_n\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
-      $$=-\sum_n\mathrm{E}_{\mathbf{z}_n|x_n}\left[\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
-      $$=-\sum_n\sum_k p(\mathbf{z}_n=C_k|x_n)\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
-      $$=-\sum_n\sum_k q_{n,k}\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
-      
+      $$=\mathrm{E}_{\mathbf{z}_n|x_n}\left[\sum_n\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
+      $$=\sum_n\mathrm{E}_{\mathbf{z}_n|x_n}\left[\log p(x_n;\mathbf{z}_n,\{\beta_k\}^K_{k=1})+\log p(\mathbf{z}_n;\btheta)\right]$$
+      $$=\sum_n\sum_k p(\mathbf{z}_n=C_k|x_n)\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
+      $$=\sum_n\sum_k q_{n,k}\left(\log p(x_n;\mathbf{z}_n=C_k,\beta_k)+\log p(\mathbf{z}_n=C_k;\btheta)\right)$$
+      $$\boxed{\mathrm{E}_{\mathbf{z}_n|x_n}\left[-\mcL(\btheta,\{\beta_k\}^K_{k=1})\right]=\sum_n\sum_k q_{n,k}\left(\log\mathrm{Gamma}(x_n;\alpha,\beta_k)+\log \theta_k\right)}$$
       
       \item 
       We wish to solve for the following
@@ -196,14 +195,42 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
       
       we can do so using a Lagrange multiplier:
       
-      $$\text{L}(\btheta, \lambda) = \mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1}) + \lambda\left(\sum_k\theta_k-1\right)$$
-      $$= - $$
+      $$\text{L}(\btheta, \lambda) = \mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1}) + \lambda\left(\sum_{j=1}^K\theta_j-1\right)$$
+      $$=-\sum_{i=1}^N\sum_{j=1}^K q_{i,j}\left(\log\mathrm{Gamma}(x_i;\alpha,\beta_j)+\log \theta_j\right)+ \lambda\left(\sum_{j=1}^K\theta_j-1\right)$$
+      $$= -\sum_{i=1}^N\sum_{j=1}^K q_{i,j}\left(\alpha\log\beta_j-\log\Gamma(x_i)+(\alpha-1)\log(x_i)-\beta_j x+\log \theta_j\right) + \lambda\left(\sum_{j=1}^K\theta_j-1\right) $$
       
-      now we take the gradient with respect to $\theta_k$:
-      
-      and set it equal to zero:
-      
-      this value makes intuitive sense because...
+      the gradient with respect to $\theta_k$ of the above is
+
+      $$\nabla_{\theta_k}\text{L}(\btheta, \lambda)=-\sum_{i=1}^N\nabla_{\theta_k} q_{i,k}(\log\theta_k)+\lambda$$
+      $$=-\sum_{i=1}^N\frac{q_{i,k}}{\theta_k}+\lambda$$
+      $$=-\frac{N}{\theta_k}\sum_{i=1}^N q_{i,k}+\lambda$$
+
+      and setting this to zero to solve for $\theta_k$ yields
+
+      $$\boxed{\theta_k =-\frac{N}{\lambda}\sum_{i=1}^N q_{i,k}}$$
+
+      now, we do the same procedure to solve for $\lambda$ by taking the following 
+      gradient and setting it to zero:
+
+      $$\nabla_{\lambda}\text{L}(\btheta, \lambda)=\sum_{j=1}^K \theta_j -1$$
+
+      substituting the boxed equation from above we have
+
+      $$\nabla_{\lambda}\text{L}(\btheta, \lambda)=\sum_{j=1}^K -\frac{N}{\lambda}\sum_{i=1}^N q_{i,j} -1$$
+      $$=-\frac{N}{\lambda}\sum_{j=1}^K \sum_{i=1}^N q_{i,j} -1$$
+
+      notice that $\sum_{j=1}^K \sum_{i=1}^N q_{i,j}=N$ so we have, setting to zero,
+    
+      $$\nabla_{\lambda}\text{L}(\btheta, \lambda) =-\frac{N^2}{\lambda}-1=0$$
+      $$\implies \boxed{\lambda=-N^2} $$
+
+      putting together our two boxed equations we have
+
+      $$\theta_k =-\frac{N}{-N^2}\sum_{i=1}^N q_{i,k}$$
+      $$\boxed{\theta_k =\frac{1}{N}\sum_{i=1}^N q_{i,k}}$$
+
+      this optimal value for $\theta_k$ makes sense we are averaging, over the entire data set,
+      the entry of $\mathbf{q_n}$ that corresponds to the category $C_k$.
       \item
     \end{enumerate}
   \item 
