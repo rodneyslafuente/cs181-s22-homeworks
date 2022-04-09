@@ -231,9 +231,35 @@ Using the~$\boldq_n$ estimates from the Expectation Step, derive an update for m
 
       this optimal value for $\theta_k$ makes sense we are averaging, over the entire data set,
       the entry of $\mathbf{q_n}$ that corresponds to the category $C_k$.
+
       \item
+    
+      We wish to solve for the following
+      
+      $$\underset{\{\beta_k\}^K_{k=1}}{\mathrm{argmin}}\;\mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1})$$
+      
+      we can just differentiate with respect to $\beta_k$ here to solve this:
+
+      $$\nabla_{\beta_k}\mathrm{E}_{\mathbf{z}_n|x_n}\mcL(\btheta,\{\beta_k\}^K_{k=1}) $$
+      $$=\nabla_{\beta_k}-\sum_{i=1}^N\sum_{j=1}^K q_{i,j}\left(\log\mathrm{Gamma}(x_i;\alpha,\beta_j)+\log \theta_j\right)$$
+      $$=\nabla_{\beta_k} -\sum_{i=1}^N\sum_{j=1}^K q_{i,j}\left(\alpha\log\beta_j-\log\Gamma(x_i)+(\alpha-1)\log(x_i)-\beta_j x+\log \theta_j\right) $$
+      $$=-\sum_{i=1}^N \nabla_{\beta_k} [q_{i,k}\alpha\log\beta_k-q_{i,k}\beta_k x_i]$$
+      $$=-\sum_{i=1}^N \frac{q_{i,k}\alpha }{\beta_k} - q_{i,k}x_i$$
+      $$=-\sum_{i=1}^N \frac{q_{i,k}\alpha }{\beta_k} - q_{i,k}x_i$$
+      setting this to zero yields
+      $$\boxed{\beta_k = \alpha\frac{\sum_{i=1}^N q_{i,k}}{\sum_{i=1}^N q_{i,k}x_i}}$$
+      this answer makes intuitive sense as $\beta_k$, the rate parameter for the gamma distribution,
+      is being calculated to be negatively proportional to a weighted average of the $x_n$'s, which
+      could be interpreted as times between events (such that their average is the inverse of the rate). 
+
     \end{enumerate}
   \item 
+  Yes, except that we would no longer have to average over a ``soft" definition of $\mathbf{z}_n$, which
+  is how we used $\mathbf{q}_n$.
+  When calculating our loss function to minimize, instead we could directly plug in the one-hot encoded
+  vector $\mathbf{z}_n$
+  
+  
   \item 
     Plot:
 
