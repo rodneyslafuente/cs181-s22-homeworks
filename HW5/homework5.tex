@@ -358,35 +358,67 @@ For this problem you will implement PCA from scratch on the first 6000 images of
 \subsection*{Solution}
 Plots:
 
-% \includegraphics[width=\linewidth]{p2_cfvs}
+\includegraphics[width=\linewidth]{p2_cfvs}
 
-% \includegraphics[width=0.25\linewidth]{p2_mean}
-% \includegraphics[width=0.75\linewidth]{p2_pcomps}
+\includegraphics[width=0.25\linewidth]{p2_mean}
+\includegraphics[width=0.75\linewidth]{p2_pcomps}
 
 Code:
 
 \begin{python}
 def pca(x, n_comps=500):
-    top_eigvals = 'not implemented'
-    top_pcomps = 'not implemented'
+    x = x - np.mean(x, axis=0)
+    _, s, vh = np.linalg.svd(x)
+    top_eigvals = s[:n_comps] ** 2 / x.shape[0]
+    top_pcomps = vh[:n_comps, :]
     return top_eigvals, top_pcomps
 
 
 def calc_cfvs(eigvals):
-    cum_frac_vars = 'not implemented'
-    return cum_frac_vars
+    cum_frac_vars = np.cumsum(eigvals, axis=0) / np.sum(eigvals)
+    return cum_frac_vars    
 
 
 def calc_errs(x, pcomps):
-    err_mean = 'not implemented'
-    err_pcomp = 'not implemented'
+    x_mean = np.mean(x, axis=0)
+    err_mean =np.mean(np.sum((x - x_mean) ** 2, axis=1), axis=0)
+    err_pcomp = np.mean(np.sum((x - (x_mean + (x - x_mean) @ pcomps[:10, :].T @ pcomps[:10, :] )) ** 2, axis=1))
     return err_mean, err_pcomp
 \end{python}
 
 \begin{enumerate}
   \item 
+  The first 500 eigenvalues of the decomposition correspond to ~0.9994 of the variance. 
+  This value was calculated by running $PCA(x, n\_comps=500)$ as well as $PCA(x, n\_comps=784)$
+  and calculating the sum of the former divided by the sum of the latter.
+  
+  \item
+  I did not notice much similarity to the centers from k-means. I think this is a correct
+  evaluation, as the two methods are doing something entirely different; k-means is averaging 
+  images it decides are most similar, while PCA is selecting features that explain the most 
+  variance. Because of this, it makes sense that k-means may somewhat resemble actual digits 
+  whereas the principle components don't resemble anything like digits.
+  
   \item 
+  For PCA, the reconstruction error using the mean is 3.436024e+06, and the reconstruction error 
+  using the 10 principle components is 1.731315e+06. The final objective loss achieved by 
+  k-means on the dataset was 2.548403e+06. It makes sense that the reconstruction error
+  using the mean image is the highest as it is essentially calculating the k-means objective error
+  on one cluster. The reasoning behind the reconstruction error using the 10 principle components 
+  being lower than the k-means objective error is more subtle--it is because k-means is simply 
+  grouping close images together whereas PCA is purposefully selecting images that together
+  explain the most variance in the data set.
+
   \item 
+  This would not affect either the quality of the reconstruction error as we are
+  changing the basis of the principle components which affects both dimensionality reduction
+  and reconstruction equivalently, meaning it gets cancelled out in the reconstruction error 
+  calculation.
+
+  The interpretation of the components would change, however, as these would be completely changed
+  relative to the data set whose variance they are trying to maximally represent.
+
+
 \end{enumerate}
 
 \newpage
@@ -489,12 +521,43 @@ questions and show your work (i.e., state what the blocking path(s) is/are and w
 \section*{Solution}
 \begin{enumerate}
   \item 
+  No, if traveling is not observed. If traveling is not observed than the information flow is unblocked.
+  
   \item 
+  Yes. There is no information flow between the two. This is assuming get sleep is not observed.
+  
   \item 
+  No. Explaining away is occurring. If we observe eat exotic foods, then knowing sick can tell us how much friends over contributed to eat exotic foods, and vice versa.
+  
   \item 
+  No. Unless weekend, is observed, than knowing friends over gives information on weekend, which in turn gives information on get sleep.
+  
   \item 
+  Yes. Once weekend is observed then knowing friends over gives zero information on get sleep.
+  
+  \item The new network is the following
+  \begin{center}
+    \begin{tikzpicture}[
+        node distance=1cm and .5cm,
+        bn/.style={draw,ellipse,text width=2cm,align=center}
+        ]
+        \node[bn] (w) {\attr{Weekend}};
+        \node[bn,below right=of w] (t) {\attr{Traveling}};
+        \node[bn,right=of t] (s) {\attr{Sick}};
+        \node[bn,below left=of w] (f) {\attr{Friends over}};
+        \node[bn,below right=of f] (eef) {\attr{Eat exotic foods}};
+        \node[bn,right=of eef] (gs) {\attr{Get sleep}};
+        \path (w) edge[-latex] (t)
+        (w) edge[-latex] (f)
+        (f) edge[-latex] (eef)
+        (t) edge[-latex] (eef)
+        (s) edge[-latex] (gs)
+        (s) edge[-latex] (eef);
+    \end{tikzpicture}
+  \end{center}
+  
   \item 
-  \item 
+  Yes. If eat exotic foods was observe, than there would be explaining away occurring between friends over and sick such that knowing if friends over would give information on sick. This information would in turn give information on get sleep, so there would be information flow rendering friends over and get sleep not independent.
 \end{enumerate}
 
 \newpage
@@ -508,5 +571,5 @@ Whom did you work with, and did you use any resources beyond cs181-textbook and 
 I did not work with anyone on this problem set.
 \subsection*{Calibration}
 Approximately how long did this homework take you to complete (in hours)? 
-
+20+
 \end{document}

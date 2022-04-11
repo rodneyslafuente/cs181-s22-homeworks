@@ -6,9 +6,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 
+import torchvision
+import numpy as np
+
+mnist_trainset = torchvision.datasets.MNIST(root='./data', train=True, download=True)  # download MNIST
+N = 6000 
+
+x = mnist_trainset.data[:N]  # select N datapoints
+x = x.flatten(1)             # flatten the images
+x = x.float()                # convert pixels from uint8 to float
+x = x.numpy()  
+
 # Loading datasets for K-Means and HAC
-small_dataset = np.load("data/small_dataset.npy")
-large_dataset = np.load("data/large_dataset.npy")
+# small_dataset = np.load("data/small_dataset.npy")
+# large_dataset = np.load("data/large_dataset.npy")
 
 # NOTE: You may need to add more helper functions to these classes
 class KMeans(object):
@@ -55,7 +66,7 @@ class KMeans(object):
                 for i in range(len(X)):
                     for k in range(self.K):
                         if resp_mat[i][k]:
-                            loss += np.linalg.norm(X[i] - self.centers[k])
+                            loss += np.linalg.norm(X[i] - self.centers[k]) ** 2
                 losses.append(loss)
 
             # Check for convergence
@@ -66,6 +77,7 @@ class KMeans(object):
             last_resp_mat = resp_mat
 
         self.resp_mat = resp_mat
+        self.losses = np.array(losses)
 
         if plot_rss:
             _, ax = plt.subplots()
@@ -160,8 +172,11 @@ def make_mean_image_plot(data, standardized=False, title=''):
 
 
 # ~~ Part 1 ~~
-# KMeansClassifier = KMeans(10)
-# KMeansClassifier.fit(large_dataset, plot_rss=True)
+KMeansClassifier = KMeans(10)
+KMeansClassifier.fit(x, plot_rss=True)
+rss = KMeansClassifier.losses[-1]
+print('RSS: '+str(rss)+' Mean RSS: '+str(rss / x.shape[0]))
+
 
 # ~~ Part 2 ~~
 # make_mean_image_plot(large_dataset, False, title='part2')
@@ -235,7 +250,7 @@ def make_mean_image_plot(data, standardized=False, title=''):
 # plt.savefig('part5haccentroid.png')
 
 # ~~ Part 6 ~~
-from seaborn import heatmap
+# from seaborn import heatmap
 
 # uniform_data = np.random.rand(10, 12)
 
@@ -266,22 +281,22 @@ from seaborn import heatmap
 # print(resp_mat)
 # print(np.sum(resp_mat, axis=0))
 
-def generate_mat(m1, m2):
-    mat = np.zeros((10, 10))
-    for i in range(len(m1)):
-        for j in range(len(m2)):
-            mat[np.argmax(m1[i])][np.argmax(m2[j])] += 1
-    return mat
+# def generate_mat(m1, m2):
+#     mat = np.zeros((10, 10))
+#     for i in range(len(m1)):
+#         for j in range(len(m2)):
+#             mat[np.argmax(m1[i])][np.argmax(m2[j])] += 1
+#     return mat
 
-m1 = np.load('m1.npy') # kmeans
-m2 = np.load('m2.npy') # min
-m3 = np.load('m3.npy') # max
-m4 = np.load('m4.npy') # centroid
+# m1 = np.load('m1.npy') # kmeans
+# m2 = np.load('m2.npy') # min
+# m3 = np.load('m3.npy') # max
+# m4 = np.load('m4.npy') # centroid
 
-data = generate_mat(m3, m4)
+# data = generate_mat(m3, m4)
 
-fig, ax = plt.subplots()
-ax = heatmap(data)
-ax.set_ylabel('HAC, max linkage')
-ax.set_xlabel('HAC, centroid linkage')
-plt.savefig('part6maxcentroid.png')
+# fig, ax = plt.subplots()
+# ax = heatmap(data)
+# ax.set_ylabel('HAC, max linkage')
+# ax.set_xlabel('HAC, centroid linkage')
+# plt.savefig('part6maxcentroid.png')
