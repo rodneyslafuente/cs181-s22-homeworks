@@ -94,5 +94,4 @@
 \newcommand{\extraline}[1]{\def\hmlset@extraline{#1}}
 
 \theoremstyle{hmlplain}
-%\newmdtheoremenv[skipabove=\topsep,skipbelow=\topsep,nobreak=true]{problem}{Problem}
-\newmdtheoremenv[skipabove=\topsep,skipbelow=\topsep]{problem}{Problem}
+\newmdtheoremenv[skipabove=\topsep,skipbelow=\topsep,nobreak=true]{problem}{Problem}
