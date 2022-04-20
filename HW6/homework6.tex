@@ -19,7 +19,7 @@
 \usepackage{bm}
 \usepackage{enumitem}
 \usepackage{tikz}
-\usepackage{xifthen}
+% \usepackage{xifthen}
 \usepackage{soul}
 \usepackage{framed}
 
@@ -121,9 +121,82 @@ $$
 \end{enumerate}
 \end{problem}
 
+\newpage
 \textbf{Solution:}
+\begin{enumerate}
+    \item 
+    Below is the graphical model for this factorization.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{cs181hw6}
+    \end{figure}
+    As $G$ is not yet observed,
+    $R$ and $S$ are independent.
+
+    \item 
+    Given that $R$ and $S$ are independent, the probability that the sprinkler
+    is on given that it is raining is 
+    $$\boxed{P(S=1|R=1)=P(S=1)=0.5}$$.
+    
+    \item
+    We want to know the probability that the sprinkler is on given that the grass is wet.
+    By Bayes' Theorem, we have
+    $$P(S=1|G=1)=\frac{P(G=1|S=1)P(S=1)}{P(G=1)}=\frac{P(G=1|S=1)P(S=1)}{P(G=1|S=1)P(S=1)+P(G=1|S=0)P(S=0)}$$
+
+    By the Law of Total Probability, we have
+    $$P(G=1|S=1)=P(G=1|R=0,S=1)P(R=0)+P(G=1|R=1,S=1)P(R=1)$$
+    $$=(0.75)(1-0.25)+(1)(0.25)=0.8125$$
+    $$P(G=1|S=0)=P(G=1|R=0,S=0)P(R=0)+P(G=1|R=1,S=0)P(R=1)$$
+    $$=(0)(1-0.25)+(0.75)(0.25)=0.1875$$
+
+    Plugging these back into our definition of $P(S=1|G=1)$ we get
+    $$P(S=1|G=1)=\frac{P(G=1|S=1)P(S=1)}{P(G=1|S=1)P(S=1)+P(G=1|S=0)P(S=0)}$$
+    $$=\frac{(0.8125)(0.5)}{(0.8125)(0.5)+(0.1875)(0.5)}$$
+    $$\boxed{P(S=1|G=1)=0.8125}$$
+
+    \item
+    We want to know the probability that the sprinkler is on given that it is raining and the grass
+    is wet. By Bayes' Theorem we have
+    $$P(S=1|R=1,G=1)=\frac{P(G=1|R=1,S=1)P(S=1|R=1)}{P(G=1|R=1)}$$
+    we know that 
+    $$P(G=1|R=1,S=1)=1$$
+    and that, since R and S are independent, 
+    $$P(S=1|R=1)=P(S=1)=0.5$$
+    Now, in order to calculate $P(G=1|R=1)$ we use the Law of Total Probability:
+    $$P(G=1|R=1)-P(G=1|R=1,S=0)P(S=0)+P(G=1|R=1,S=1)P(S=1)$$
+    $$=(0.75)(0.5)+(1)(0.5)=0.875$$
+    Plugging these values into our definition of $P(S=1|R=1,G=1)$ we get
+    $$P(S=1|R=1,G=1)=\frac{P(G=1|R=1,S=1)P(S=1|R=1)}{P(G=1|R=1)}$$
+    $$\boxed{P(S=1|R=1,G=1)=\frac{(1)(0.5)}{(0.875)}\approx 0.571}$$
+
+    \item
+    The explaining away effect shown above is that the observance of $G$ makes $R$ a 
+    contributor of information to $S$, despite the fact that, before $G$ was observed, $R$ and $S$ were
+    completely independent.
+
+    \item
+    The marginal distribution $P(R)$ for the $C\rightarrow G\rightarrow S$ ordering is the following
+    $$P(R) = \sum_c P(C)P(R|C) \sum_G\sum_S P(G|R,S)P(S|C)$$
+
+    \item
+    The marginal distribution $P(R)$ for the $S\rightarrow G\rightarrow C$ ordering is the following
+    $$P(R) = \sum_S \sum_G P(G)P(R,S) \sum_C P(C)P(R|C)P(S|C)$$
+
+    \item
+    The $C\rightarrow G\rightarrow S$ ordering requires, at its longest step, the calculation of $\sum_S P(G|R,S)P(S|C)$, summing over S for every value 
+    in a $k$ by $k$ matrix consisting of all possibilities for $G$ and $C$. This operation has 
+    complexity $O(k^3)$. $k$ here refers to the domain size of the variables which in this case is
+    2.
+
+    The longest calculation in the $S\rightarrow G\rightarrow C$ ordering, on the other hand, is
+    $\sum_C P(C)P(R|C)P(S|C)$. This calculation requires summing over $C$ for every value in a 
+    size $k$ vector consisting of all possibilities for $S$. This operation has complexity $O(k^2)$.
+
+    Based on these complexities, the $S\rightarrow G\rightarrow C$ ordering requires less computation.
 
 
+\end{enumerate}
+\newpage
 
 
 \begin{problem}[Policy and Value Iteration, 15 pts]
@@ -246,6 +319,7 @@ discount rate $\gamma$, and exploration rate $\epsilon$. \emph{Do not use outsid
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
 \subsection*{Name}
+Rodney Lafuente Mercado
 \subsection*{Collaborators and Resources}
 Whom did you work with, and did you use any resources beyond cs181-textbook and your notes?
 \subsection*{Calibration}
