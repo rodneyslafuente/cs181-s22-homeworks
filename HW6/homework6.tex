@@ -263,6 +263,7 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
 \end{itemize}
 \end{framed}
 
+\newpage
 \textbf{Solution:}
 \begin{itemize}
     \item[1a.]
@@ -290,14 +291,47 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
     With \texttt{ct = 0.01} and \texttt{max\_iter = 100}, the final learned value function is the 
     following:
 
-    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.48\textwidth]{hw6_1d}
+    \end{figure}
+
+    This final learned value function takes 5 iterations to converge. Using 
+    \texttt{ct = 0.001} does not affect the number of iterations until convergence.
+    Neither does using \texttt{ct = 0.0001}.
     
     \item[2a.]
+    Implemented in \texttt{T1.P2.ipynb}.
+    
     \item[2b.]
+    Below are the plots resulting from setting \texttt{max\_iter = 4}, \texttt{print\_every = 1}.
+
+    \begin{figure}[H]
+        \centering
+        {
+            \includegraphics[width=0.48\textwidth]{hw6_2b_1}
+            \includegraphics[width=0.48\textwidth]{hw6_2b_2}
+        }\hfill
+        {
+            \includegraphics[width=0.48\textwidth]{hw6_2b_3}
+            \includegraphics[width=0.48\textwidth]{hw6_2b_4}
+        }
+    \end{figure}
+    
     \item[2c.]
-    \item[3]
-    \item[4]
-    \item[5]       
+    With \texttt{ct = 0.01} and \texttt{max\_iter = 100}, the final learned value function is the 
+    following:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.48\textwidth]{hw6_2c}
+    \end{figure}
+    This final learned value function takes 25 iterations to converge. Using 
+    \texttt{ct = 0.001} changes this to 31 iterations.
+    Using \texttt{ct = 0.0001} changes this to 38 iterations.
+    
+    \item[3.]
+    \item[4.]
+    \item[5.]       
 \end{itemize}
 
 
