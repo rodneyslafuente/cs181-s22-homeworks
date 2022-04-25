@@ -330,8 +330,48 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
     Using \texttt{ct = 0.0001} changes this to 38 iterations.
     
     \item[3.]
+    Policy iteration requires less iterations and takes considerably more time 
+    per iteration.
+    Value iteration requires more iterations and takes considerably less time 
+    per iteration. 
+    Overall, the tradeoff between number of iterations for each and time per iteration 
+    cancels out and both methods have a very similar overall runtime.
+
+    One important thing to note, however, is that Value Iteration is sensitive 
+    to the setting for convergence tolerance while Policy Iteration is not.
+    If we want to reach a small convergence tolerance (e.g. \texttt{ct = 0.0001}), then Value Iteration
+    takes more iterations and results in a much higher overall runtime as compared
+    with Policy Iteration.
+
     \item[4.]
+    We include the plot below. Policy Iteration was used to calculate these.
+    \begin{figure}[H]
+        \centering
+        {
+            \subfloat[$\gamma=0.6$]{
+                \includegraphics[width=0.48\textwidth]{hw6_4_6}
+            }
+            \subfloat[$\gamma=0.7$]{
+                \includegraphics[width=0.48\textwidth]{hw6_4_7}
+            }
+        }\hfill
+        {
+            \subfloat[$\gamma=0.8$]{
+                \includegraphics[width=0.48\textwidth]{hw6_4_8}
+            }
+            \subfloat[$\gamma=0.9$]{
+                \includegraphics[width=0.48\textwidth]{hw6_4_9}
+            }
+        }\caption{Learned policies with differing discount values ($\gamma$)}
+    \end{figure}
+    
     \item[5.]       
+    I would expect the optimal policy to, depending on how high gamma is, favor
+    avoiding the squares with reward 4 and 20 in order to prioritize reaching the
+    square with reward 50. With lower values of gamma, the policy will feel fine
+    reaching the squares with the lower positive rewards, and the policy may not look 
+    too different from its corresponding policy in the regular game. With high
+    values for gamma, however, it will definitely avoid these lower positive reward value squares.
 \end{itemize}
 
 
