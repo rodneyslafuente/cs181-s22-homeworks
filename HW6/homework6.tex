@@ -163,7 +163,7 @@ $$
     and that, since R and S are independent, 
     $$P(S=1|R=1)=P(S=1)=0.5$$
     Now, in order to calculate $P(G=1|R=1)$ we use the Law of Total Probability:
-    $$P(G=1|R=1)-P(G=1|R=1,S=0)P(S=0)+P(G=1|R=1,S=1)P(S=1)$$
+    $$P(G=1|R=1)=P(G=1|R=1,S=0)P(S=0)+P(G=1|R=1,S=1)P(S=1)$$
     $$=(0.75)(0.5)+(1)(0.5)=0.875$$
     Plugging these values into our definition of $P(S=1|R=1,G=1)$ we get
     $$P(S=1|R=1,G=1)=\frac{P(G=1|R=1,S=1)P(S=1|R=1)}{P(G=1|R=1)}$$
@@ -183,7 +183,7 @@ $$
     $$P(R) = \sum_S \sum_G P(G)P(R,S) \sum_C P(C)P(R|C)P(S|C)$$
 
     \item
-    The $C\rightarrow G\rightarrow S$ ordering requires, at its longest step, the calculation of $\sum_S P(G|R,S)P(S|C)$, summing over S for every value 
+    The $C\rightarrow G\rightarrow S$ ordering requires, at its longest step, the calculation of $\sum_S P(G|R,S)P(S|C)$, which requires summing over S for every value 
     in a $k$ by $k$ matrix consisting of all possibilities for $G$ and $C$. This operation has 
     complexity $O(k^3)$. $k$ here refers to the domain size of the variables which in this case is
     2.
@@ -194,6 +194,9 @@ $$
 
     Based on these complexities, the $S\rightarrow G\rightarrow C$ ordering requires less computation.
 
+    Note (confusion on this problem): If we are given $P(R|C)$ and $P(C)$ we can find the distribution 
+    $P(R)$ by calculating $\sum_C P(R|C)P(C)$, an operation with complexity $O(k)$. In fact, 
+    the methods above involve redundant operations such as $\sum_G P(G|R, C)=1$.
 
 \end{enumerate}
 \newpage
@@ -261,6 +264,41 @@ Note that we are doing infinite-horizon planning to maximize the expected reward
 \end{framed}
 
 \textbf{Solution:}
+\begin{itemize}
+    \item[1a.]
+    Implemented in \texttt{T1.P2.ipynb}.
+
+    \item[1b.]
+    Implemented in \texttt{T1.P2.ipynb}.
+
+    \item[1c.]
+    Below are the plots resulting from setting \texttt{max\_iter = 4}, \texttt{print\_every = 1}.
+
+    \begin{figure}[H]
+        \centering
+        {
+            \includegraphics[width=0.48\textwidth]{hw6_1c_1}
+            \includegraphics[width=0.48\textwidth]{hw6_1c_2}
+        }\hfill
+        {
+            \includegraphics[width=0.48\textwidth]{hw6_1c_3}
+            \includegraphics[width=0.48\textwidth]{hw6_1c_4}
+        }
+    \end{figure}
+
+    \item[1d.]
+    With \texttt{ct = 0.01} and \texttt{max\_iter = 100}, the final learned value function is the 
+    following:
+
+    
+    
+    \item[2a.]
+    \item[2b.]
+    \item[2c.]
+    \item[3]
+    \item[4]
+    \item[5]       
+\end{itemize}
 
 
 
