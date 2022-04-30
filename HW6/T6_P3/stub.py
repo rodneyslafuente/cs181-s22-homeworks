@@ -4,10 +4,10 @@ import numpy.random as npr
 import pygame as pg
 
 # uncomment this for animation
-# from SwingyMonkey import SwingyMonkey
+from SwingyMonkey import SwingyMonkey
 
 # uncomment this for no animation
-from SwingyMonkeyNoAnimation import SwingyMonkey
+# from SwingyMonkeyNoAnimation import SwingyMonkey
 
 
 X_BINSIZE = 200
@@ -25,6 +25,7 @@ class Learner(object):
         self.last_state = None
         self.last_action = None
         self.last_reward = None
+        self.is_first_state = True
 
         # We initialize our Q-value grid that has an entry for each action and state.
         # (action, rel_x, rel_y)
@@ -34,6 +35,7 @@ class Learner(object):
         self.last_state = None
         self.last_action = None
         self.last_reward = None
+        self.is_first_state = True
 
     def discretize_state(self, state):
         """
@@ -52,16 +54,39 @@ class Learner(object):
         Return 0 if you don't want to jump and 1 if you do.
         """
 
-        # TODO (currently monkey just jumps around randomly)
-        # 1. Discretize 'state' to get your transformed 'current state' features.
-        # 2. Perform the Q-Learning update using 'current state' and the 'last state'.
-        # 3. Choose the next action using an epsilon-greedy policy.
+        # Do nothing if first state
+        if self.is_first_state:
+            self.is_first_state = False
+            self.last_action = 0
+            self.last_state = state
+            return self.last_action
 
-        new_action = npr.rand() < 0.1
-        new_state = state
+        # Define variables
+        alpha = 0.1
+        epsilon = 0.001
+        gamma = 0.9
+
+        # 1. Discretize 'state' to get your transformed 'current state' features.
+        last_x, last_y = self.discretize_state(self.last_state)
+        curr_x, curr_y = self.discretize_state(state)
+
+        # 2. Perform the Q-Learning update using 'current state' and the 'last state'.
+        self.Q[self.last_action, last_x, last_y] += alpha * \
+            (self.last_reward + gamma * np.amax(self.Q[:, curr_x, curr_y]) \
+                - self.Q[self.last_action, last_x, last_y])
+
+        # 3. Choose the next action using an epsilon-greedy policy.
+        new_action = None
+        if npr.rand() < epsilon:
+            if npr.rand() < 0.3:
+                new_action = 1
+            else:
+                new_action = 0
+        else:
+            new_action = np.argmax(self.Q[:, curr_x, curr_y])
 
         self.last_action = new_action
-        self.last_state = new_state
+        self.last_state = state
 
         return self.last_action
 
